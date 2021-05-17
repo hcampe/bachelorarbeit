@@ -1,3 +1,5 @@
+// g++ -Wall -Wextra SU2.cpp su2tests.cpp -o su2tests
+// ./su2tests
 #include <cmath> // for M_PI
 #include <complex>
 #include <iomanip> // to manipulate the displayed precision
