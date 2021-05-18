@@ -57,7 +57,7 @@ public:
 
 // compute the trace of any SU(2) matrix. This is not a method since 
 // trace(U) is closer to the mathematical formulation tr(U) than U.trace()
-std::complex<double> trace(SU2matrix);
+std::complex<double> trace(const SU2matrix&);
 
 // overloading the * operator for matrix calculation:
 SU2matrix operator*(const SU2matrix&, const SU2matrix&);
@@ -93,5 +93,9 @@ SU2matrix iPauliZ();
 // since it should work with any Uniform Random Number Generator, it is
 // implemented as a template:
 template<class URNG> SU2matrix randomSU2(URNG& engine, const double delta);
+
+// since the actual function is generated from the template at compilation, for this
+// to work, the implementation needs to be in a separate HEADER file:
+#include "randomSU2implementation.h"
 
 #endif
