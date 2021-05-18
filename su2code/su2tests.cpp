@@ -51,5 +51,11 @@ int main()
 	std::cout << "delta = 0.001:		" << randomSU2(engine, 0.001) << '\n';
 	std::cout << "delta = 0.01:		" << randomSU2(engine, .01) << '\n';
 	std::cout << "delta = 0.1:		" << randomSU2(engine, 0.1) << '\n';
+
+	std::cout << "\n//////////// testing assignment with the = operator ///////////\n";
+	SU2matrix U {};
+	std::cout << "newly initialised: " << U << '\n';
+	U = iPauliY();
+	std::cout << "setting U = iPauliY: " << U << '\n';
 	return 0;
 }
