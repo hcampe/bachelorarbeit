@@ -62,6 +62,10 @@ public:
 // the generator for random su2matrices.
 Gaugeconfig coldStart(const size_t, const size_t);
 
-Gaugeconfig hotStart(const size_t, const size_t, const double);
+template<class URNG>
+Gaugeconfig hotStart(const size_t, const size_t, URNG&, const double);
+
+// this has to be implemented in a HEADER file:
+#include "hotstartImplementation.h"
 
 #endif
