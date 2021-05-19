@@ -38,6 +38,13 @@ SU2matrix& Gaugeconfig::operator()(const std::vector<std::size_t> x,
 }
 
 
+const SU2matrix& Gaugeconfig::operator()(const std::vector<std::size_t> x,
+					  			   const std::size_t mu) const
+{
+	return parallelTransports[x[0]][x[1]][x[2]][x[3]][mu];
+}
+
+
 Gaugeconfig coldStart(const size_t timeSize,
 						const size_t spaceSize)
 {

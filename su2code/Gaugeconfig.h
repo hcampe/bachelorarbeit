@@ -54,6 +54,9 @@ public:
 	// parallel transport.
 	SU2matrix& operator()(const std::vector<std::size_t> x,
 						  const std::size_t mu);
+
+	const SU2matrix& operator()(const std::vector<std::size_t> x,
+						  const std::size_t mu) const;
 };
 
 // two functions to initialise the configuration: for a cold start,
