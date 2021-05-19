@@ -25,25 +25,25 @@ public:
     SU2matrix() = default; // default constructor
     // constructor by specifying the upper row:
     SU2matrix(container input) { upperRow = input; };
-    container getUpperRow() { return upperRow; }
+    container getUpperRow() const { return upperRow; }
     void setUpperRow(container input) { upperRow = input; }
 
     //////////// signatures of more advanced methods /////////
 
     // transposed matrix
-    SU2matrix transpose() ;
+    SU2matrix transpose() const;
 
     // complex conjugate
-    SU2matrix star();
+    SU2matrix star() const;
 
     // hermitian conjugate
-    SU2matrix dagger();
+    SU2matrix dagger() const;
 
     // renormalise the matrix: due to the limited precision of the 
     // complex type, every now and then, the matrix should be renormalised
     // s.t. det U = 1. The normalisation factor is given by the square root
     // of the sum of the squares of the moduli of the upper row entries.
-    SU2matrix renormalise();
+    SU2matrix renormalise() const;
 
 
     // overloading [] for easier access to the values using array indexing.

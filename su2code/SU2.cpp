@@ -8,25 +8,25 @@ std::complex<double> trace(const SU2matrix& U)
 }
 
 
-SU2matrix SU2matrix::transpose()
+SU2matrix SU2matrix::transpose() const
 {
 	return SU2matrix({upperRow[0], -conj(upperRow[1])});
 }
 
 
-SU2matrix SU2matrix::star()
+SU2matrix SU2matrix::star() const
 {
 	return SU2matrix({conj(upperRow[0]), conj(upperRow[1])});
 }
 
 
-SU2matrix SU2matrix::dagger()
+SU2matrix SU2matrix::dagger() const
 {
 	return SU2matrix({conj(upperRow[0]), -upperRow[1]});
 }
 
 
-SU2matrix SU2matrix::renormalise()
+SU2matrix SU2matrix::renormalise() const
 {
 	// std::complex::norm returns the square of the complex
 	// modulus of a complex number
