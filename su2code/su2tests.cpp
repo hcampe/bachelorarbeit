@@ -57,5 +57,8 @@ int main()
 	std::cout << "newly initialised: " << U << '\n';
 	U = iPauliY();
 	std::cout << "setting U = iPauliY: " << U << '\n';
+
+	std::cout << "\n////////////// testing addition: ///////////////\n";
+	std::cout << "unity + iPauliX = " << unity + iPauliX << '\n';
 	return 0;
 }

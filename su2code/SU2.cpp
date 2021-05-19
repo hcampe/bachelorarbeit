@@ -57,6 +57,18 @@ SU2matrix operator*(const SU2matrix& a, const SU2matrix& b)
 }
 
 
+SU2matrix operator+(const SU2matrix& a, const SU2matrix& b)
+{
+	return SU2matrix({a[0] + b[0], a[1] + b[1]});
+}
+
+
+void operator+=(SU2matrix& a, const SU2matrix& b)
+{
+	a.setUpperRow({a[0] + b[0], a[1] + b[1]});
+	return;
+}
+
 SU2matrix unity()
 {
 	return SU2matrix();

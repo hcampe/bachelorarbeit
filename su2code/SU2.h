@@ -55,12 +55,19 @@ public:
 };
 
 
+
 // compute the trace of any SU(2) matrix. This is not a method since 
 // trace(U) is closer to the mathematical formulation tr(U) than U.trace()
 std::complex<double> trace(const SU2matrix&);
 
 // overloading the * operator for matrix calculation:
 SU2matrix operator*(const SU2matrix&, const SU2matrix&);
+
+// this does not make much sense for a matrix of the
+// SU(2) group but it will b needed later on:
+SU2matrix operator+(const SU2matrix&, const SU2matrix&);
+
+void operator+=(SU2matrix&, const SU2matrix&);
 
 
 // definitions of the three pauli matrices and unity
