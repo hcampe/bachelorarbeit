@@ -39,8 +39,8 @@ public:
 		{ parallelTransports = input; }
 
 	// returns the time/space size
-	size getTimeSize() { return parallelTransports.size(); }
-	size getSpaceSize() { return parallelTransports[0].size(); }
+	size getTimeSize() const { return parallelTransports.size(); }
+	size getSpaceSize() const { return parallelTransports[0].size(); }
 
 	////////// signatures of more advanced methods /////////
 
