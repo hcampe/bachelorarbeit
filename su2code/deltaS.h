@@ -14,12 +14,12 @@ K_mu(x) = \sum_{\nu \neq \mu}
 + U^\dag_\nu(x+a\mu-a\nu)U^\dag_\mu(x-a\nu) U_\nu(x-a\nu))
 */
 SU2matrix getStaple(const Gaugeconfig&,
-	const std::vector<std::size_t>, const std::size_t);
+	const std::vector<long int>, const std::size_t);
 
 /* the change of the action then becomes
 \Delta S = -\beta/2 Re Tr(\Delta U_mu(x) * K_mu(x))
 (NO sum over mu)
 */
 double deltaS(const Gaugeconfig&,
-	const std::vector<std::size_t>, const std::size_t,
+	const std::vector<long int>, const std::size_t,
 	const SU2matrix&, const double);

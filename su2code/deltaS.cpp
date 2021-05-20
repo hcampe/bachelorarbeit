@@ -5,17 +5,17 @@
 
 
 SU2matrix getStaple(const Gaugeconfig& U,
-					const std::vector<size_t> x,
+					const std::vector<long int> x,
 					const std::size_t mu)
 {
 	SU2matrix staple { {{0., 0.}, {0., 0.}} };
 
-	std::vector<size_t> xPlusMu { x };
+	std::vector<long int> xPlusMu { x };
 	xPlusMu[mu]++;
 
-	std::vector<size_t> xPlusNu { x };
-	std::vector<size_t> xMinusNu { x };
-	std::vector<size_t> xPlusMuMinusNu { xPlusMu };
+	std::vector<long int> xPlusNu { x };
+	std::vector<long int> xMinusNu { x };
+	std::vector<long int> xPlusMuMinusNu { xPlusMu };
 
 	for (std::size_t nu {0}; nu < Gaugeconfig::numSpacetimeDim; nu++)
 	{
