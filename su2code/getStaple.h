@@ -3,6 +3,9 @@
 #include "Gaugeconfig.h"
 #include "SU2.h"
 
+#ifndef DELTAS_H
+#define DELTAS_H
+
 /* for the computation of the change of the actione
 corr. to the change of a certain parallel transport,
 we need the staple thereof. It contains all other
@@ -16,10 +19,5 @@ K_mu(x) = \sum_{\nu \neq \mu}
 SU2matrix getStaple(const Gaugeconfig&,
 	const std::vector<long int>, const std::size_t);
 
-/* the change of the action then becomes
-\Delta S = -\beta/2 Re Tr(\Delta U_mu(x) * K_mu(x))
-(NO sum over mu)
-*/
-double deltaS(const Gaugeconfig&,
-	const std::vector<long int>, const std::size_t,
-	const SU2matrix&, const double);
+
+#endif

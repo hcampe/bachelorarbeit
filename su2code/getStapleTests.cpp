@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "deltaS.h"
+#include "getStaple.h"
 #include "Gaugeconfig.h"
 #include "SU2.h"
 
