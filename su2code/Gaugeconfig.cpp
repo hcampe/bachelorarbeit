@@ -31,17 +31,45 @@ Gaugeconfig::Gaugeconfig(const Gaugeconfig::size timeSize,
 }
 
 
-SU2matrix& Gaugeconfig::operator()(const std::vector<std::size_t> x,
+// SU2matrix& Gaugeconfig::operator()(const std::vector<std::size_t> x,
+// 					  			   const std::size_t mu)
+// {
+// 	return parallelTransports[x[0]][x[1]][x[2]][x[3]][mu];
+// }
+
+
+// const SU2matrix& Gaugeconfig::operator()(const std::vector<std::size_t> x,
+// 					  			   const std::size_t mu) const
+// {
+// 	return parallelTransports[x[0]][x[1]][x[2]][x[3]][mu];
+// }
+
+
+SU2matrix& Gaugeconfig::operator()(const std::vector<long int> x,
 					  			   const std::size_t mu)
 {
-	return parallelTransports[x[0]][x[1]][x[2]][x[3]][mu];
+	const long int timeSize { static_cast<long int>(parallelTransports.size()) };
+	const long int spaceSize{ static_cast<long int>(parallelTransports[0].size()) };
+
+	return parallelTransports[(x[0] + timeSize) % timeSize]
+							 [(x[1] + spaceSize) % spaceSize]
+							 [(x[2] + spaceSize) % spaceSize]
+							 [(x[3] + spaceSize) % spaceSize]
+							 [mu];
 }
 
 
-const SU2matrix& Gaugeconfig::operator()(const std::vector<std::size_t> x,
+const SU2matrix& Gaugeconfig::operator()(const std::vector<long int> x,
 					  			   const std::size_t mu) const
 {
-	return parallelTransports[x[0]][x[1]][x[2]][x[3]][mu];
+	const long int timeSize { static_cast<long int>(parallelTransports.size()) };
+	const long int spaceSize{ static_cast<long int>(parallelTransports[0].size()) };
+
+	return parallelTransports[(x[0] + timeSize) % timeSize]
+							 [(x[1] + spaceSize) % spaceSize]
+							 [(x[2] + spaceSize) % spaceSize]
+							 [(x[3] + spaceSize) % spaceSize]
+							 [mu];
 }
 
 
