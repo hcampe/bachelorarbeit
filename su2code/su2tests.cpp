@@ -60,5 +60,6 @@ int main()
 
 	std::cout << "\n////////////// testing addition: ///////////////\n";
 	std::cout << "unity + iPauliX = " << unity + iPauliX << '\n';
+	std::cout << "unity - iPauliX = " << unity - iPauliX << '\n';
 	return 0;
 }

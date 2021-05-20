@@ -67,6 +67,8 @@ SU2matrix operator*(const SU2matrix&, const SU2matrix&);
 // SU(2) group but it will b needed later on:
 SU2matrix operator+(const SU2matrix&, const SU2matrix&);
 
+SU2matrix operator-(const SU2matrix&, const SU2matrix&);
+
 void operator+=(SU2matrix&, const SU2matrix&);
 
 
