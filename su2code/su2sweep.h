@@ -1,6 +1,9 @@
-#include "deltaS.h"
-#include "gaugeconfig.h"
+#include "Gaugeconfig.h"
+#include "getStaple.h"
 #include "SU2.h"
+
+#ifndef SU2SWEEP_H
+#define SU2SWEEP_H
 
 /* performs a whole sweep through a given lattice and
 updates it following the Metropolis algorithm: At each
@@ -10,6 +13,11 @@ controlled by delta). The lattice is updated if the
 action is lowered by doing so or with the
 probability exp(-\Delta S) if \Delta S > 0.
 */
-template<class URNG> Gaugeconfig<SU2matrix>
-sweep(const Gaugeconfig<SU2matrix>&, const double beta,
+template<class URNG> Gaugeconfig
+sweep(const Gaugeconfig&, const double beta, const double delta,
 	const std::size_t iterationsPerSight, URNG&);
+
+// the implementation is done in a HEADER file:
+#include "su2sweepImplementation.h"
+
+#endif
