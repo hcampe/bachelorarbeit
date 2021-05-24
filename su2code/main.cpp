@@ -1,5 +1,7 @@
 // compile: g++ -Wall -Wextra main.cpp SU2.cpp Gaugeconfig.cpp getStaple.cpp -o main
 // execute: ./main
+#include <ctime>
+#include <fstream>
 #include <iostream>
 #include <random>
 
@@ -21,6 +23,7 @@ int main()
 	const std::size_t timeSize { 16 };
 	const std::size_t spaceSize { 8 };
 	const double deltaInit { .1 };
+
 	// initial configuration:
 	Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
 
@@ -32,6 +35,7 @@ int main()
 
 	// to save observables:
 	const std::string dataDir { "../data/" };
+	const std::string filename { "firstTest.txt" };
 	std::vector<double> energy(numberOfSweeps, 0.);
 
 	std::cout << "performing " << numberOfSweeps << " sweeps: ";
@@ -43,6 +47,21 @@ int main()
 	}
 	std::cout << '\n';
 
+	std::cout << "zero if writing successful: " << writeVector(energy, dataDir + filename) << '\n';
 
-	std::cout << "zero if writing successful: " << writeVector(energy, dataDir + "firstTest.txt") << '\n';
+	// log the parameters:
+	std::ofstream log;
+	log.open(dataDir + "allSimulations.log", std::ios::app); // append mode
+	log<< "# ";
+	log<< "deltaInit = " << deltaInit << ", ";
+	log<< "delta = " << delta << ", ";
+	log<< "beta = " << beta << ", ";
+	log<< "numberOfSweeps = " << numberOfSweeps << ", ";
+	log<< "iterationsPerSight = " << iterationsPerSight << ", ";
+	log<< "timeSize = " << timeSize << ", ";
+	log<< "spaceSize = " << spaceSize << ", ";
+	log<< "filename: " << filename << ", ";
+	const time_t now { std::time(0) };
+	log << std::ctime(&now);
+	log.close();
 }
