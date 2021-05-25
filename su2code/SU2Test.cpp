@@ -47,7 +47,7 @@ int main()
 	std::random_device rd {}; // to generate the seed for...
 	std::mt19937 engine { rd() }; // Mersenne twister generator
 	std::uniform_real_distribution<double> dist {0., 1.};
-	std::cout << "delta = 0.0:		" << randomSU2(engine, 0.0);
+	std::cout << "delta = 0.0:		" << randomSU2(engine, 0.0) << '\n';
 	std::cout << "delta = 0.001:		" << randomSU2(engine, 0.001) << '\n';
 	std::cout << "delta = 0.01:		" << randomSU2(engine, .01) << '\n';
 	std::cout << "delta = 0.1:		" << randomSU2(engine, 0.1) << '\n';

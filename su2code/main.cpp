@@ -22,28 +22,30 @@ int main()
 	// lattice parameters
 	const std::size_t timeSize { 16 };
 	const std::size_t spaceSize { 8 };
-	const double deltaInit { .1 };
+	const double deltaInit { 0. };
 
 	// initial configuration:
-	Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
+	// Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
+	Gaugeconfig U(timeSize, spaceSize);
+	std::cout << "initial energy: " << gaugeEnergy(U) << std::endl;
 
 	// sweep parameters:
 	const double beta { 4.5 };
 	const double delta { .1 };
-	const std::size_t numberOfSweeps { 200 };
+	const std::size_t numberOfSweeps { 20 };
 	const std::size_t iterationsPerSight { 10 };
 
 	// to save observables:
 	const std::string dataDir { "../data/" };
-	const std::string filename { "firstTest.txt" };
+	const std::string filename { "frmColdStart.txt" };
 	std::vector<double> energy(numberOfSweeps, 0.);
 
 	std::cout << "performing " << numberOfSweeps << " sweeps: ";
 	for (std::size_t i {0}; i < numberOfSweeps; i++)
 	{
 		std::cout << "#" << std::flush;
-		U = sweep(U, beta, delta, iterationsPerSight, engine);
 		energy[i] = gaugeEnergy(U);
+		U = sweep(U, beta, delta, iterationsPerSight, engine);
 	}
 	std::cout << '\n';
 

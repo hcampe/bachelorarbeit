@@ -26,9 +26,9 @@ sweep(const Gaugeconfig& input, const double beta, const double delta,
 	{
 		for (x[1] = 0; x[1] < spaceSize; x[1]++)
 		{
-			for (x[2] = 0; x[1] < spaceSize; x[1]++)
+			for (x[2] = 0; x[2] < spaceSize; x[2]++)
 			{
-				for (x[3] = 0; x[1] < spaceSize; x[1]++)
+				for (x[3] = 0; x[3] < spaceSize; x[3]++)
 				{
 					for (std::size_t mu { 0 }; mu < Gaugeconfig::numSpacetimeDim; mu++)
 					{

@@ -27,9 +27,9 @@ double gaugeEnergy(const Gaugeconfig& U)
 	{
 		for (x[1] = 0; x[1] < spaceSize; x[1]++)
 		{
-			for (x[2] = 0; x[1] < spaceSize; x[1]++)
+			for (x[2] = 0; x[2] < spaceSize; x[2]++)
 			{
-				for (x[3] = 0; x[1] < spaceSize; x[1]++)
+				for (x[3] = 0; x[3] < spaceSize; x[3]++)
 				{
 					for (std::size_t nu { 1 }; nu < Gaugeconfig::numSpacetimeDim; nu++)
 					{
