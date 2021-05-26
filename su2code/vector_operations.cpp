@@ -35,7 +35,7 @@ int writeVector(const std::vector<double>& arr,
 {
     std::ofstream out(filename);
 
-    for (std::size_t i = 1; i < arr.size(); i++)
+    for (std::size_t i {0}; i < arr.size(); i++)
     {
         out << arr[i] << '\n';
     }
