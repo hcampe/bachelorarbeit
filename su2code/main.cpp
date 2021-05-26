@@ -49,22 +49,22 @@ int main()
 	}
 	std::cout << '\n';
 
-	std::cout << "zero if writing successful: ";
-	std::cout << writeVector(energy, dataDir + filename) << '\n';
+	// std::cout << "zero if writing successful: ";
+	// std::cout << writeVector(energy, dataDir + filename) << '\n';
 
 	// log the parameters:
-	std::ofstream log;
-	log.open(dataDir + "allSimulations.log", std::ios::app); // append mode
-	log<< "# ";
-	log<< "deltaInit = " << deltaInit << ", ";
-	log<< "delta = " << delta << ", ";
-	log<< "beta = " << beta << ", ";
-	log<< "numberOfSweeps = " << numberOfSweeps << ", ";
-	log<< "iterationsPerSight = " << iterationsPerSight << ", ";
-	log<< "timeSize = " << timeSize << ", ";
-	log<< "spaceSize = " << spaceSize << ", ";
-	log<< "filename: " << filename << ", ";
-	const time_t now { std::time(0) };
-	log << std::ctime(&now);
-	log.close();
+	// std::ofstream log;
+	// log.open(dataDir + "allSimulations.log", std::ios::app); // append mode
+	// log<< "# ";
+	// log<< "deltaInit = " << deltaInit << ", ";
+	// log<< "delta = " << delta << ", ";
+	// log<< "beta = " << beta << ", ";
+	// log<< "numberOfSweeps = " << numberOfSweeps << ", ";
+	// log<< "iterationsPerSight = " << iterationsPerSight << ", ";
+	// log<< "timeSize = " << timeSize << ", ";
+	// log<< "spaceSize = " << spaceSize << ", ";
+	// log<< "filename: " << filename << ", ";
+	// const time_t now { std::time(0) };
+	// log << std::ctime(&now);
+	// log.close();
 }
