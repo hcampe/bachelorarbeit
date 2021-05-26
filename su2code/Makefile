@@ -1,5 +1,6 @@
 CXX = g++
 CXXFLAGS = -Wall -Wpedantic
+# add -pg for analysis w/ gprof -> execute -> gprof main
 
 # syntax:
 # target: prerequisites
@@ -9,7 +10,8 @@ sourceFiles = $(wildcard *.cpp)
 objectFiles = $(patsubst %.cpp,%.o,${sourceFiles})
 
 
-all: analysisTest GaugeconfigTest getStapleTest SU2Test main
+all: analysisTest GaugeconfigTest getStapleTest\
+		SU2Test vector_operationsTest main
 
 # all test executables w/ their corr. dependencies
 # $^ references all prerequisites
@@ -23,6 +25,9 @@ getStapleTest: getStaple.o getStapleTest.o Gaugeconfig.o SU2.o
 	${CXX} ${CXXFLAGS} $^ -o $@
 
 SU2Test: SU2.o SU2Test.o
+	${CXX} ${CXXFLAGS} $^ -o $@
+
+vector_operationsTest: vector_operations.o vector_operationsTest.o
 	${CXX} ${CXXFLAGS} $^ -o $@
 
 

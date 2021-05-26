@@ -25,14 +25,14 @@ int main()
 	const double deltaInit { 0. };
 
 	// initial configuration:
-	// Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
-	Gaugeconfig U(timeSize, spaceSize);
+	Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
+	// Gaugeconfig U(timeSize, spaceSize);
 	std::cout << "initial energy: " << gaugeEnergy(U) << std::endl;
 
 	// sweep parameters:
 	const double beta { 4.5 };
 	const double delta { .1 };
-	const std::size_t numberOfSweeps { 20 };
+	const std::size_t numberOfSweeps { 5 };
 	const std::size_t iterationsPerSight { 10 };
 
 	// to save observables:
@@ -43,13 +43,14 @@ int main()
 	std::cout << "performing " << numberOfSweeps << " sweeps: ";
 	for (std::size_t i {0}; i < numberOfSweeps; i++)
 	{
-		std::cout << "#" << std::flush;
 		energy[i] = gaugeEnergy(U);
 		U = sweep(U, beta, delta, iterationsPerSight, engine);
+		std::cout << "#" << std::flush;
 	}
 	std::cout << '\n';
 
-	std::cout << "zero if writing successful: " << writeVector(energy, dataDir + filename) << '\n';
+	std::cout << "zero if writing successful: ";
+	std::cout << writeVector(energy, dataDir + filename) << '\n';
 
 	// log the parameters:
 	std::ofstream log;
