@@ -17,7 +17,7 @@ class SU2matrix
     using complex = std::complex<double>;
     using container = std::vector<complex>;
 
-    container upperRow {{0., 0.}, {0., 0.}}; // default: unitity
+    container upperRow {{1., 0.}, {0., 0.}}; // default: unitity
 
 public:
     ///////////// implementations of basic methods ////////////

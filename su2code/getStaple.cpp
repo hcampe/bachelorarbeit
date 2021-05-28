@@ -1,13 +1,14 @@
-#include <omp.h>
 #include <vector>
 
 #include "Gaugeconfig.h"
 #include "SU2.h"
 
+
 SU2matrix getStaple(const Gaugeconfig& U,
 					const std::vector<long int> x,
 					const std::size_t mu)
 {
+	SU2matrix staple { {{0., 0.}, {0., 0.}} };
 
 	std::vector<long int> xPlusMu { x };
 	xPlusMu[mu]++;
@@ -16,38 +17,21 @@ SU2matrix getStaple(const Gaugeconfig& U,
 	std::vector<long int> xMinusNu { x };
 	std::vector<long int> xPlusMuMinusNu { xPlusMu };
 
+	for (std::size_t nu {0}; nu < Gaugeconfig::numSpacetimeDim; nu++)
+	{
+		if (nu == mu) continue;
 
-    const int numberOfThreads { omp_get_max_threads() };
-    static SU2matrix* stapleOfThread = new SU2matrix[numberOfThreads];
-    #pragma omp parallel
-    {
-        int thread { omp_get_thread_num() };
+		xPlusNu[nu]++;
+		xPlusMuMinusNu[nu]--;
+		xMinusNu[nu]--;
 
-        #pragma omp for
-	    for (std::size_t nu = 0; nu < Gaugeconfig::numSpacetimeDim; nu++)
-	    {
-	    	if (nu == mu) continue;
+		staple += U(xPlusMu, nu) * U(xPlusNu, mu).dagger() * U(x, nu).dagger()
+			+ U(xPlusMuMinusNu, nu).dagger() * U(xMinusNu, mu).dagger() * U(xMinusNu, nu);
 
-	    	xPlusNu[nu]++;
-	    	xPlusMuMinusNu[nu]--;
-	    	xMinusNu[nu]--;
-
-	        stapleOfThread[thread] = U(xPlusMu, nu) * U(xPlusNu, mu).dagger() * U(x, nu).dagger()
-	    		+ U(xPlusMuMinusNu, nu).dagger() * U(xMinusNu, mu).dagger() * U(xMinusNu, nu);
-
-	    	xMinusNu[nu]++;
-	    	xPlusMuMinusNu[nu]++;
-	    	xPlusNu[nu]--;
-	    }
-    }
-
-    SU2matrix staple {};
-
-    for (int i {0}; i < numberOfThreads; i++)
-    {
-        staple += stapleOfThread[i];
-    }
+		xMinusNu[nu]++;
+		xPlusMuMinusNu[nu]++;
+		xPlusNu[nu]--;
+	}
 
 	return staple;
 }
-

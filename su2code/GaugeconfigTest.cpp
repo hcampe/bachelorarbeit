@@ -19,9 +19,9 @@ int main()
 	U({0,0,0,0}, 0) = iPauliX();
 	std::cout << "U({0,0,0,0}, 0) = " << U({0,0,0,0}, 0) << '\n';
 
-    std::cout << "\n//////////// testing cold start //////////\n";
+    std::cout << "\n///////////// testing cold start //////////\n";
     U = coldStart(5,2);
-	std::cout << "accessing first element: U({0,0,0,0}, 0) = " << U({0,0,0,0}, 0) << '\n';
+	std::cout << "U({0,0,0,0}, 0) = " << U({0,0,0,0}, 0) << '\n';
 
 	std::cout << "\n////////// testing hot start /////////////\n";
 	std::random_device rd {}; // to generate the seed for...

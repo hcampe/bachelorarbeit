@@ -77,7 +77,7 @@ void operator+=(SU2matrix& a, const SU2matrix& b)
 
 SU2matrix unity()
 {
-	return SU2matrix({{1., 0.}, {0., 0.}});
+	return SU2matrix({{1., 0}, {0., 0.}});
 }
 
 SU2matrix iPauliX()

@@ -1,7 +1,6 @@
 CXX = g++
-CXXFLAGS = -Wall -Wpedantic -fopenmp
+CXXFLAGS = -Wall -Wpedantic
 # add -pg for analysis w/ gprof -> execute -> gprof main
-# add -fopenmp for openmp (multi threading)
 
 # syntax:
 # target: prerequisites
