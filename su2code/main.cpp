@@ -26,8 +26,6 @@ int main()
 
 	// initial configuration:
 	Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
-	// Gaugeconfig U(timeSize, spaceSize);
-	std::cout << "initial energy: " << gaugeEnergy(U) << std::endl;
 
 	// sweep parameters:
 	const double beta { 4.5 };
