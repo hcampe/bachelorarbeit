@@ -1,3 +1,5 @@
+#include <omp.h>
+
 #include "Gaugeconfig.h"
 #include "SU2.h"
 
@@ -19,23 +21,23 @@ SU2matrix getPlaquette(const Gaugeconfig& U,
 double gaugeEnergy(const Gaugeconfig& U)
 {
 	double energy { 0. };
-	std::vector<long int> x(Gaugeconfig::numSpacetimeDim, 0);
 	long int timeSize { static_cast<long int>(U.getTimeSize()) };
 	long int spaceSize { static_cast<long int>(U.getSpaceSize()) };
 
-	for (x[0] = 0; x[0] < timeSize; x[0]++)
+    #pragma omp parallel for reduction(+:energy)
+	for (long int x0 = 0; x0 < timeSize; x0++)
 	{
-		for (x[1] = 0; x[1] < spaceSize; x[1]++)
+	    for (long int x1 = 0; x1 < spaceSize; x1++)
 		{
-			for (x[2] = 0; x[2] < spaceSize; x[2]++)
+	        for (long int x2 = 0; x2 < spaceSize; x2++)
 			{
-				for (x[3] = 0; x[3] < spaceSize; x[3]++)
+	            for (long int x3 = 0; x3 < spaceSize; x3++)
 				{
 					for (std::size_t nu { 1 }; nu < Gaugeconfig::numSpacetimeDim; nu++)
 					{
 						for (std::size_t mu { 0 }; mu < nu; mu++)
 						{
-							energy += real(trace(getPlaquette(U, x, mu, nu)));
+							energy += real(trace(getPlaquette(U, {x0, x1, x2, x3}, mu, nu)));
 						}
 					}
 				}
