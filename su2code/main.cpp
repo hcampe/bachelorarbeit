@@ -26,6 +26,7 @@ int main()
 
 	// initial configuration:
 	Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
+	// Gaugeconfig U(timeSize, spaceSize);
 
 	// sweep parameters:
 	const double beta { 4.5 };
