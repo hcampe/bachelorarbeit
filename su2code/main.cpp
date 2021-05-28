@@ -42,7 +42,7 @@ int main()
 	for (std::size_t i {0}; i < numberOfSweeps; i++)
 	{
 		energy[i] = gaugeEnergy(U);
-		U = sweep(U, beta, delta, iterationsPerSight, engine);
+		sweep(U, beta, delta, iterationsPerSight, engine);
 		std::cout << "#" << std::flush;
 	}
 	std::cout << '\n';

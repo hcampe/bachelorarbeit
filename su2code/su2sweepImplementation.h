@@ -9,11 +9,10 @@
 #ifndef SU2SWEEP_IMPL
 #define SU2SWEEP_IMPL
 
-template<class URNG> Gaugeconfig
-sweep(const Gaugeconfig& input, const double beta, const double delta,
+template<class URNG> void 
+sweep(Gaugeconfig& U, const double beta, const double delta,
    	const std::size_t iterationsPerSight, URNG& engine)
 {
-	Gaugeconfig U { input };
 	std::vector<long int> x(Gaugeconfig::numSpacetimeDim, 0);
 	long int timeSize { static_cast<long int>(U.getTimeSize()) };
 	long int spaceSize { static_cast<long int>(U.getSpaceSize()) };
@@ -47,7 +46,7 @@ sweep(const Gaugeconfig& input, const double beta, const double delta,
 		}
 	}
 
-	return U;
+	return;
 }
 
 
