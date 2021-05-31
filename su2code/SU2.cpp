@@ -1,4 +1,5 @@
 #include <cmath> // for sqrt(), acos()
+#include <iostream> // for testing
 
 #include "SU2.h"
 
@@ -32,6 +33,7 @@ SU2matrix SU2matrix::renormalise() const
 	// modulus of a complex number
 	const double normaliser { sqrt(norm(upperRow[0] +
 									norm(upperRow[1]))) };
+    //std::cout << "determinant = " << normaliser*normaliser << std::endl;
 	return SU2matrix({upperRow[0]/normaliser,
 					upperRow[1]/normaliser});
 }
