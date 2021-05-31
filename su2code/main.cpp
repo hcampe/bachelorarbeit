@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <sys/time.h> // to measure the duration of the computation
 
 #include "analysis.h"
 #include "Gaugeconfig.h"
@@ -39,6 +40,10 @@ int main()
 	const std::string filename { "frmColdStart.txt" };
 	std::vector<double> energy(numberOfSweeps, 0.);
 
+    // to measure the time:
+    struct timeval tStart, tEnd;
+    gettimeofday(&tStart, NULL);
+
 	std::cout << "performing " << numberOfSweeps << " sweeps: ";
 	for (std::size_t i {0}; i < numberOfSweeps; i++)
 	{
@@ -48,6 +53,12 @@ int main()
 	}
 	std::cout << '\n';
 
+    gettimeofday(&tEnd, NULL);
+
+    const double sec {static_cast<double>(tEnd.tv_sec - tStart.tv_sec) };
+    const double usec { static_cast<double>(tEnd.tv_usec - tStart.tv_usec) };
+
+    std::cout << numberOfSweeps << " sweeps take " << sec + 1.e-6*usec << "s" << std::endl;
 	// std::cout << "zero if writing successful: ";
 	// std::cout << writeVector(energy, dataDir + filename) << '\n';
 
