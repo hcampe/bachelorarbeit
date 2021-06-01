@@ -7,7 +7,7 @@
 int main()
 {
 	std::cout << "\n////////////// testing getStaple ///////////////\n";
-	auto U = Gaugeconfig(3,3);
+	auto U = coldStart(3,3);
 	std::vector<long int> x {0,0,0,0};
 	std::size_t mu { 0 };
 	std::cout << "the Gaugeconfig U is filled with unity matrices -> expect 6 * 1 as staple:\n";

@@ -8,7 +8,7 @@ SU2matrix getStaple(const Gaugeconfig& U,
 					const std::vector<long int> x,
 					const std::size_t mu)
 {
-	SU2matrix staple { {{0., 0.}, {0., 0.}} };
+	SU2matrix staple {};
 
 	std::vector<long int> xPlusMu { x };
 	xPlusMu[mu]++;
