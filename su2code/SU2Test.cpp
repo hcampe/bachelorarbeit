@@ -10,7 +10,7 @@
 #include "SU2.h"
 
 // just for testing:
-std::complex<double> determinant(const SU2matrix& U)
+double determinant(const SU2matrix& U)
 {
     return norm(U[0]) + norm(U[1]);
 }
@@ -40,9 +40,6 @@ int main()
 	auto iPauliXd = iPauliX.dagger();
 	std::cout << "iPauliXd = "	<< iPauliXd << '\n';
 
-    std::cout << "\n///////// testing the renormalisation ///////////\n";
-    std::cout << "iPauliX.renormalise() = " << iPauliX.renormalise() << std::endl;
-
 	std::cout << "\n////// testing matrix multiplication /////////\n";
 	std::cout << "iPauliX * iPauliY = " << iPauliX * iPauliY() << '\n';
 	std::cout << "should be: -PauliZ, PauliZ = " << iPauliZ() << '\n';
@@ -66,19 +63,20 @@ int main()
 	std::cout << "delta = 0.1:		" << U << '\n';
 
     std::cout << "\n///////// testing the renormalisation ////////////\n";
-    std::cout << "0: U = " << U << ", det(U) = " << determinant(U) << std::endl;
+    std::cout << "0: U = " << U;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
     U = U.renormalise();
     std::cout << "1: U = " << U;
-    std::cout << ", det(U) = " << determinant(U) << std::endl;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
     U = U.renormalise();
     std::cout << "2: U = " << U;
-    std::cout << ", det(U) = " << determinant(U) << std::endl;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
     U = U.renormalise();
     std::cout << "3: U = " << U;
-    std::cout << ", det(U) = " << determinant(U) << std::endl;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
     U = U.renormalise();
     std::cout << "4: U = " << U;
-    std::cout << ", det(U) = " << determinant(U) << std::endl;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
 
 
 	std::cout << "\n//////////// testing assignment with the = operator ///////////\n";

@@ -26,11 +26,8 @@ template<class URNG> SU2matrix randomSU2(URNG& engine, const double delta)
 	const double cosC { cosCdist(engine) };
 	const double sinC { sqrt(1 - cosC*cosC)};
 
-	SU2matrix U { {{cosA, sinA * cosC},
-				{sinA * sinB * sinC, sinA * cosB * sinC}} };
-    U = U.renormalise();
-
-    return U;
+	return SU2matrix({{cosA, sinA * cosC},
+				{sinA * sinB * sinC, sinA * cosB * sinC}});
 }
 
 #endif
