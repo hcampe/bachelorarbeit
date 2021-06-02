@@ -4,7 +4,7 @@
 #include <fstream> // to log things to file
 #include <iostream>
 #include <random>
-#include <sys/time.h> // to measure the duration of the computation
+#include <sys/time.h> // to measure the computation time
 
 #include "analysis.h"
 #include "Gaugeconfig.h"
@@ -28,7 +28,6 @@ int main()
 
 	// initial configuration:
 	Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
-	// Gaugeconfig U(timeSize, spaceSize);
 
 	// sweep parameters:
 	const double beta { 4.5 };
@@ -60,6 +59,7 @@ int main()
     const double usec { static_cast<double>(tEnd.tv_usec - tStart.tv_usec) };
 
     std::cout << numberOfSweeps << " sweeps take " << sec + 1.e-6*usec << "s" << std::endl;
+
 	// std::cout << "zero if writing successful: ";
 	// std::cout << writeVector(energy, dataDir + filename) << '\n';
 

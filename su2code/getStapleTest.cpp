@@ -4,6 +4,7 @@
 #include "Gaugeconfig.h"
 #include "SU2.h"
 
+
 int main()
 {
 	std::cout << "\n////////////// testing getStaple ///////////////\n";
