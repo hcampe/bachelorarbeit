@@ -39,8 +39,8 @@ public:
 		{ parallelTransports = input; }
 
 	// returns the time/space size
-	size getTimeSize() const { return static_cast<long int>(parallelTransports.size()); }
-	size getSpaceSize() const { return static_cast<long int>(parallelTransports[0].size()); }
+	long int getTimeSize() const { return static_cast<long int>(parallelTransports.size()); }
+	long int getSpaceSize() const {return static_cast<long int>(parallelTransports[0].size());}
 
 	////////// signatures of more advanced methods /////////
 
@@ -52,11 +52,6 @@ public:
 	// for simple access using parantheses. x will denote the
 	// spacetime lattice sight, mu the direction of the 
 	// parallel transport.
-	// SU2matrix& operator()(const std::vector<std::size_t> x,
-	// 					  const std::size_t mu);
-
-	// const SU2matrix& operator()(const std::vector<std::size_t> x,
-	// 					  const std::size_t mu) const;
 
 	SU2matrix& operator()(const std::vector<long int> x,
 					  			   const std::size_t mu);

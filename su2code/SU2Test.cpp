@@ -9,15 +9,24 @@
 
 #include "SU2.h"
 
+// just for testing:
+double determinant(const SU2matrix& U)
+{
+    return norm(U[0]) + norm(U[1]);
+}
+
+
 int main()
 {
 	// first test: initialise su2 matrix
 
 	std::cout << "////// testing the constructor /////////\n";
-	SU2matrix unity {};
+	SU2matrix U {};
+    SU2matrix zero {};
+	SU2matrix one { unity() };
 	SU2matrix iPauliX { {{0., 0.}, {0., 1.}} };
-	std::cout << "unity = " << unity << '\n';
-
+    std::cout << "zero = " << zero << '\n';
+	std::cout << "one = " << one << '\n';
 	std::cout << "iPauliX = "	<< iPauliX << '\n';
 
 	std::cout << "\n////// testing transpose, complex & hermitian conjugate ////////\n";
@@ -50,16 +59,33 @@ int main()
 	std::cout << "delta = 0.0:		" << randomSU2(engine, 0.0) << '\n';
 	std::cout << "delta = 0.001:		" << randomSU2(engine, 0.001) << '\n';
 	std::cout << "delta = 0.01:		" << randomSU2(engine, .01) << '\n';
-	std::cout << "delta = 0.1:		" << randomSU2(engine, 0.1) << '\n';
+    U = randomSU2(engine, 0.1);
+	std::cout << "delta = 0.1:		" << U << '\n';
+
+    std::cout << "\n///////// testing the renormalisation ////////////\n";
+    std::cout << "0: U = " << U;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
+    U = U.renormalise();
+    std::cout << "1: U = " << U;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
+    U = U.renormalise();
+    std::cout << "2: U = " << U;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
+    U = U.renormalise();
+    std::cout << "3: U = " << U;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
+    U = U.renormalise();
+    std::cout << "4: U = " << U;
+    std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
+
 
 	std::cout << "\n//////////// testing assignment with the = operator ///////////\n";
-	SU2matrix U {};
 	std::cout << "newly initialised: " << U << '\n';
 	U = iPauliY();
 	std::cout << "setting U = iPauliY: " << U << '\n';
 
 	std::cout << "\n////////////// testing addition: ///////////////\n";
-	std::cout << "unity + iPauliX = " << unity + iPauliX << '\n';
-	std::cout << "unity - iPauliX = " << unity - iPauliX << '\n';
+	std::cout << "one + iPauliX = " << one + iPauliX << '\n';
+	std::cout << "one - iPauliX = " << one - iPauliX << '\n';
 	return 0;
 }

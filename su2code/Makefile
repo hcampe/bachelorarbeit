@@ -43,6 +43,13 @@ main: $(filter-out %Test.o, ${objectFiles})
 
 # build the object files:
 # $< references the first prerequisite
+
+SU2.o: SU2.cpp SU2.h randomSU2implementation.h
+	${CXX} ${CXXFLAGS} -c $< -o $@
+
+Gaugeconfig.o: Gaugeconfig.cpp Gaugeconfig.h hotstartImplementation.h
+	${CXX} ${CXXFLAGS} -c $< -o $@
+
 %.o: %.cpp %.h
 	${CXX} ${CXXFLAGS} -c $< -o $@
 

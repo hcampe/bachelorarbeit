@@ -6,15 +6,12 @@
 SU2matrix getPlaquette(const Gaugeconfig& U,
 	const std::vector<long int> x, const size_t mu, const size_t nu)
 {
-	SU2matrix plaquette { {{0., 0.}, {0., 0.}} };
 	std::vector<long int> xPlusMu { x };
 	xPlusMu[mu]++;
 	std::vector<long int> xPlusNu { x };
 	xPlusNu[nu]++;
 
-	plaquette = U(x, mu)*U(xPlusMu, nu)*U(xPlusNu, mu).dagger()*U(x, nu).dagger();
-
-	return plaquette;
+	return U(x, mu)*U(xPlusMu, nu)*U(xPlusNu, mu).dagger()*U(x, nu).dagger();
 }
 
 

@@ -31,20 +31,6 @@ Gaugeconfig::Gaugeconfig(const Gaugeconfig::size timeSize,
 }
 
 
-// SU2matrix& Gaugeconfig::operator()(const std::vector<std::size_t> x,
-// 					  			   const std::size_t mu)
-// {
-// 	return parallelTransports[x[0]][x[1]][x[2]][x[3]][mu];
-// }
-
-
-// const SU2matrix& Gaugeconfig::operator()(const std::vector<std::size_t> x,
-// 					  			   const std::size_t mu) const
-// {
-// 	return parallelTransports[x[0]][x[1]][x[2]][x[3]][mu];
-// }
-
-
 SU2matrix& Gaugeconfig::operator()(const std::vector<long int> x,
 					  			   const std::size_t mu)
 {
@@ -78,16 +64,14 @@ Gaugeconfig coldStart(const size_t inputTimeSize,
 {
     Gaugeconfig U(inputTimeSize, inputSpaceSize);
 	std::vector<long int> x(Gaugeconfig::numSpacetimeDim, 0);
-	long int timeSize { static_cast<long int>(U.getTimeSize()) };
-	long int spaceSize { static_cast<long int>(U.getSpaceSize()) };
 
-	for (x[0] = 0; x[0] < timeSize; x[0]++)
+	for (x[0] = 0; x[0] < U.getTimeSize(); x[0]++)
 	{
-		for (x[1] = 0; x[1] < spaceSize; x[1]++)
+		for (x[1] = 0; x[1] < U.getSpaceSize(); x[1]++)
 		{
-			for (x[2] = 0; x[2] < spaceSize; x[2]++)
+			for (x[2] = 0; x[2] < U.getSpaceSize(); x[2]++)
 			{
-				for (x[3] = 0; x[3] < spaceSize; x[3]++)
+				for (x[3] = 0; x[3] < U.getSpaceSize(); x[3]++)
 				{
 					for (std::size_t mu { 0 }; mu < Gaugeconfig::numSpacetimeDim; mu++)
 					{
