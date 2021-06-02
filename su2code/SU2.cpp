@@ -1,4 +1,6 @@
 #include <cmath> // for sqrt(), acos()
+#include <iostream>
+#include <omp.h>
 
 #include "SU2.h"
 
@@ -52,8 +54,34 @@ std::ostream& operator<<(std::ostream& out, const SU2matrix& U)
 
 SU2matrix operator*(const SU2matrix& A, const SU2matrix& B)
 {
-	return SU2matrix({A[0]*B[0] - A[1]*conj(B[1]),
-					  A[0]*B[1] + A[1]*conj(B[0])});
+    std::vector<std::complex<double>> a(4, {0., 0.});
+    std::vector<std::complex<double>> b(4, {0., 0.});
+    std::vector<std::complex<double>> products(4, {0., 0.});
+
+    #pragma omp parallel for
+    for (size_t i = 0; i < 4; i++)
+    {
+        switch(i)
+        {
+            case 0:
+                products[0] = A[0]*B[0];
+                break;
+            case 1:
+                products[1] = A[1]*conj(B[1]);
+                break;
+            case 2:
+                products[2] = A[0]*B[1];
+                break;
+            case 3:
+                products[3] = A[1]*conj(B[0]);
+                break;
+        }
+    }
+
+    return SU2matrix({products[0] - products[1], products[2] + products[3]});
+
+	// return SU2matrix({A[0]*B[0] - A[1]*conj(B[1]),
+	// 				  A[0]*B[1] + A[1]*conj(B[0])});
 }
 
 
