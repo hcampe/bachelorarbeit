@@ -17,7 +17,7 @@ class SU2matrix
     using complex = std::complex<double>;
     using container = std::vector<complex>;
 
-    container upperRow {{0., 0.}, {0., 0.}}; // default: unitity
+    container upperRow {{0., 0.}, {0., 0.}}; // default: 0 matrix
 
 public:
     ///////////// implementations of basic methods ////////////
@@ -40,7 +40,7 @@ public:
     SU2matrix dagger() const;
 
     // renormalise the matrix: due to the limited precision of the 
-    // complex type, every now and then, the matrix should be renormalised
+    // complex type: every now and then, the matrix should be renormalised
     // s.t. det U = 1. The normalisation factor is given by the square root
     // of the sum of the squares of the moduli of the upper row entries.
     SU2matrix renormalise() const;

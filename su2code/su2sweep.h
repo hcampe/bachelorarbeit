@@ -8,7 +8,7 @@
 /* performs a whole sweep through a given lattice and
 updates it following the Metropolis algorithm: At each
 sight, and for each parallel transport, a new version
-is generated randomly (and close to the original,
+is generated randomly (close to the original,
 controlled by delta). The lattice is updated if the 
 action is lowered by doing so or with the
 probability exp(-\Delta S) if \Delta S > 0.

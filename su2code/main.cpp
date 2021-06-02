@@ -1,7 +1,7 @@
 // compile: g++ -Wall -Wextra main.cpp SU2.cpp Gaugeconfig.cpp getStaple.cpp -o main
 // execute: ./main
-#include <ctime>
-#include <fstream>
+#include <ctime> // to log the time of execution
+#include <fstream> // to log things to file
 #include <iostream>
 #include <random>
 #include <sys/time.h> // to measure the duration of the computation
@@ -16,6 +16,7 @@
 
 int main()
 {
+
 	// for random number genration:
 	std::random_device rd {}; // to generate the seed for...
 	std::mt19937 engine { rd() }; // Mersenne twister generator

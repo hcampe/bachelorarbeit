@@ -30,8 +30,8 @@ SU2matrix SU2matrix::renormalise() const
 {
 	// std::complex::norm returns the square of the complex
 	// modulus of a complex number
-	const double normaliser { sqrt(norm(upperRow[0] +
-									norm(upperRow[1]))) };
+	const double normaliser { sqrt(norm(upperRow[0]) +
+									norm(upperRow[1])) };
 	return SU2matrix({upperRow[0]/normaliser,
 					upperRow[1]/normaliser});
 }
@@ -50,28 +50,28 @@ std::ostream& operator<<(std::ostream& out, const SU2matrix& U)
 }
 
 
-SU2matrix operator*(const SU2matrix& a, const SU2matrix& b)
+SU2matrix operator*(const SU2matrix& A, const SU2matrix& B)
 {
-	return SU2matrix({a[0]*b[0] - a[1]*conj(b[1]),
-					  a[0]*b[1] + a[1]*conj(b[0])});
+	return SU2matrix({A[0]*B[0] - A[1]*conj(B[1]),
+					  A[0]*B[1] + A[1]*conj(B[0])});
 }
 
 
-SU2matrix operator+(const SU2matrix& a, const SU2matrix& b)
+SU2matrix operator+(const SU2matrix& A, const SU2matrix& B)
 {
-	return SU2matrix({a[0] + b[0], a[1] + b[1]});
+	return SU2matrix({A[0] + B[0], A[1] + B[1]});
 }
 
 
-SU2matrix operator-(const SU2matrix& a, const SU2matrix& b)
+SU2matrix operator-(const SU2matrix& A, const SU2matrix& B)
 {
-	return SU2matrix({a[0] - b[0], a[1] - b[1]});
+	return SU2matrix({A[0] - B[0], A[1] - B[1]});
 }
 
 
-void operator+=(SU2matrix& a, const SU2matrix& b)
+void operator+=(SU2matrix& A, const SU2matrix& B)
 {
-	a.setUpperRow({a[0] + b[0], a[1] + b[1]});
+	A.setUpperRow({A[0] + B[0], A[1] + B[1]});
 	return;
 }
 
