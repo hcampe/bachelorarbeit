@@ -26,14 +26,16 @@ SU2matrix SU2matrix::dagger() const
 }
 
 
-SU2matrix SU2matrix::renormalise() const
+void SU2matrix::renormalise()
 {
 	// std::complex::norm returns the square of the complex
 	// modulus of a complex number
 	const double normaliser { sqrt(norm(upperRow[0]) +
 									norm(upperRow[1])) };
-	return SU2matrix({upperRow[0]/normaliser,
-					upperRow[1]/normaliser});
+	upperRow[0] /= normaliser;
+	upperRow[1] /= normaliser;
+    
+    return;
 }
 
 

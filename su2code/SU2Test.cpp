@@ -65,16 +65,16 @@ int main()
     std::cout << "\n///////// testing the renormalisation ////////////\n";
     std::cout << "0: U = " << U;
     std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
-    U = U.renormalise();
+    U.renormalise();
     std::cout << "1: U = " << U;
     std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
-    U = U.renormalise();
+    U.renormalise();
     std::cout << "2: U = " << U;
     std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
-    U = U.renormalise();
+    U.renormalise();
     std::cout << "3: U = " << U;
     std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
-    U = U.renormalise();
+    U.renormalise();
     std::cout << "4: U = " << U;
     std::cout << ", sqrt(det(U)) = " << sqrt(determinant(U)) << std::endl;
 

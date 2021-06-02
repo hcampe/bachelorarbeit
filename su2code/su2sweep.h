@@ -13,7 +13,7 @@ controlled by delta). The lattice is updated if the
 action is lowered by doing so or with the
 probability exp(-\Delta S) if \Delta S > 0.
 */
-template<class URNG> Gaugeconfig
+template<class URNG> void 
 sweep(const Gaugeconfig&, const double beta, const double delta,
 	const std::size_t iterationsPerSight, URNG&);
 
