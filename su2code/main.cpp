@@ -30,52 +30,66 @@ int main()
 	Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
 
 	// sweep parameters:
-	const double beta { 4.5 };
+	const double beta { 1. };
 	const double delta { .1 };
 	const std::size_t numberOfSweeps { 5 };
 	const std::size_t iterationsPerSight { 10 };
 
 	// to save observables:
 	const std::string dataDir { "../data/" };
-	const std::string filename { "frmColdStart.txt" };
+	const std::string filename { "firstSeriousSimulation^^.txt" };
 	std::vector<double> energy(numberOfSweeps, 0.);
 
     // to measure the time:
     struct timeval tStart, tEnd;
     gettimeofday(&tStart, NULL);
 
-	std::cout << "performing " << numberOfSweeps << " sweeps: ";
+	std::cout << "performing " << numberOfSweeps << " sweeps: " << std::flush;
 	for (std::size_t i {0}; i < numberOfSweeps; i++)
 	{
 		energy[i] = gaugeEnergy(U);
 		sweep(U, beta, delta, iterationsPerSight, engine);
-		std::cout << "#" << std::flush;
+        if (!(i%1000))
+        {
+            std::cout << i / 1000;
+        }
+        else if (!(i%100))
+        {
+            std::cout << '#';
+        }
 	}
 	std::cout << '\n';
 
     gettimeofday(&tEnd, NULL);
 
-    const double sec {static_cast<double>(tEnd.tv_sec - tStart.tv_sec) };
+    const double totalSec {static_cast<double>(tEnd.tv_sec - tStart.tv_sec) };
     const double usec { static_cast<double>(tEnd.tv_usec - tStart.tv_usec) };
+    const int hour { static_cast<int>(totalSec) / 3600 };
+    const int min { static_cast<int>(totalSec) / 60 - hour*60 };
+    const int sec { static_cast<int>(totalSec) % 60 };
 
-    std::cout << numberOfSweeps << " sweeps take " << sec + 1.e-6*usec << "s" << std::endl;
-  
-	// std::cout << "zero if writing successful: ";
-	// std::cout << writeVector(energy, dataDir + filename) << '\n';
+    std::cout << numberOfSweeps << " sweeps took ";
+    std::cout << hour << "h, ";
+    std::cout << min << "min, ";
+    std::cout << sec + 1.e-6*usec << "s." << std::endl;
+
+	std::cout << "zero if writing successful: ";
+	std::cout << writeVector(energy, dataDir + filename) << '\n';
 
 	// log the parameters:
-	// std::ofstream log;
-	// log.open(dataDir + "allSimulations.log", std::ios::app); // append mode
-	// log<< "# ";
-	// log<< "deltaInit = " << deltaInit << ", ";
-	// log<< "delta = " << delta << ", ";
-	// log<< "beta = " << beta << ", ";
-	// log<< "numberOfSweeps = " << numberOfSweeps << ", ";
-	// log<< "iterationsPerSight = " << iterationsPerSight << ", ";
-	// log<< "timeSize = " << timeSize << ", ";
-	// log<< "spaceSize = " << spaceSize << ", ";
-	// log<< "filename: " << filename << ", ";
-	// const time_t now { std::time(0) };
-	// log << std::ctime(&now);
-	// log.close();
+	std::ofstream log;
+	log.open(dataDir + "allSimulations.log", std::ios::app); // append mode
+	log<< "# ";
+	log<< "deltaInit = " << deltaInit << ", ";
+	log<< "delta = " << delta << ", ";
+	log<< "beta = " << beta << ", ";
+	log<< "numberOfSweeps = " << numberOfSweeps << ", ";
+	log<< "iterationsPerSight = " << iterationsPerSight << ", ";
+	log<< "timeSize = " << timeSize << ", ";
+	log<< "spaceSize = " << spaceSize << ", ";
+	log<< "filename: " << filename << ", ";
+    log << "duration: " << hour << 'h' << min << "min" << sec + 1.e-6*usec << "s, ";
+	const time_t now { std::time(0) };
+	log << std::ctime(&now);
+	log.close();
 }
