@@ -56,5 +56,5 @@ Gaugeconfig.o: Gaugeconfig.cpp Gaugeconfig.h hotstartImplementation.h
 	${CXX} ${CXXFLAGS} -c $< -o $@
 
 clean:
-	rm *Test main
 	rm *.o
+	rm *Test main

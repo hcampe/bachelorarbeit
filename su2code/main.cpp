@@ -3,7 +3,7 @@
 #include <ctime> // to log the time of execution
 #include <fstream> // to log things to file
 #include <iostream>
-#include <random>
+#include <random> // for the random generator
 #include <sys/time.h> // to measure the computation time
 
 #include "analysis.h"
@@ -48,7 +48,7 @@ int main()
 	for (std::size_t i {0}; i < numberOfSweeps; i++)
 	{
 		energy[i] = gaugeEnergy(U);
-		U = sweep(U, beta, delta, iterationsPerSight, engine);
+		sweep(U, beta, delta, iterationsPerSight, engine);
 		std::cout << "#" << std::flush;
 	}
 	std::cout << '\n';
@@ -59,7 +59,7 @@ int main()
     const double usec { static_cast<double>(tEnd.tv_usec - tStart.tv_usec) };
 
     std::cout << numberOfSweeps << " sweeps take " << sec + 1.e-6*usec << "s" << std::endl;
-
+  
 	// std::cout << "zero if writing successful: ";
 	// std::cout << writeVector(energy, dataDir + filename) << '\n';
 

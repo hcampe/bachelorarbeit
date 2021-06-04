@@ -9,13 +9,13 @@
 #ifndef SU2SWEEP_IMPL
 #define SU2SWEEP_IMPL
 
-template<class URNG> Gaugeconfig
-sweep(const Gaugeconfig& input, const double beta, const double delta,
+template<class URNG> void 
+sweep(Gaugeconfig& U, const double beta, const double delta,
    	const std::size_t iterationsPerSight, URNG& engine)
 {
-	Gaugeconfig U { input };
 	std::vector<long int> x(Gaugeconfig::numSpacetimeDim, 0);
 	SU2matrix R; // R stands for "random"^^
+    SU2matrix Unew;
 	double deltaS;
 	std::uniform_real_distribution<double> rDist {0., 1.};
 
@@ -33,11 +33,13 @@ sweep(const Gaugeconfig& input, const double beta, const double delta,
 						for (std::size_t i { 0 }; i < iterationsPerSight; i++)
 						{
 							R = randomSU2(engine, delta);
+                            Unew = U(x, mu) * R;
 							deltaS = -.5 * beta * real(trace(
-                                        (U(x, mu)*R - U(x, mu))*getStaple(U, x, mu)));
+                                        (Unew - U(x, mu))*getStaple(U, x, mu)));
 							if (deltaS < 0. or (rDist(engine) < exp(-deltaS)))
 							{
-								U(x, mu) = (U(x, mu)*R).renormalise();
+                                Unew.renormalise();
+								U(x, mu) = Unew;
 							}
 						}
 					}
@@ -46,7 +48,7 @@ sweep(const Gaugeconfig& input, const double beta, const double delta,
 		}
 	}
 
-	return U;
+	return;
 }
 
 

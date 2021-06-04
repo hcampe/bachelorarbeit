@@ -43,7 +43,7 @@ public:
     // complex type: every now and then, the matrix should be renormalised
     // s.t. det U = 1. The normalisation factor is given by the square root
     // of the sum of the squares of the moduli of the upper row entries.
-    SU2matrix renormalise() const;
+    void renormalise();
 
 
     // overloading [] for easier access to the values using array indexing.
