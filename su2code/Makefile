@@ -1,7 +1,9 @@
 CXX = g++
-CXXFLAGS = -Wall -Wpedantic -fopenmp
+CXXFLAGS = -Wall -Wpedantic -fopenmp -O3
+# -Wall & -Wpedantic for additional warnings
+# -fopenmp for openmp (multi threading)
+# -O3 for automatic (black box) optimisation by the compiler
 # add -pg for analysis w/ gprof -> execute -> gprof main
-# add -fopenmp for openmp (multi threading)
 
 # syntax:
 # target: prerequisites
