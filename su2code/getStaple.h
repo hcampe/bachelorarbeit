@@ -17,7 +17,7 @@ K_mu(x) = \sum_{\nu \neq \mu}
 + U^\dag_\nu(x+a\mu-a\nu)U^\dag_\mu(x-a\nu) U_\nu(x-a\nu))
 */
 SU2matrix getStaple(const Gaugeconfig&,
-	const std::vector<long int>, const std::size_t);
+    const std::vector<long int>, const std::size_t);
 
 
 #endif

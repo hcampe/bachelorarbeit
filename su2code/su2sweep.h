@@ -15,7 +15,7 @@ probability exp(-\Delta S) if \Delta S > 0.
 */
 template<class URNG> void 
 sweep(const Gaugeconfig&, const double beta, const double delta,
-	const std::size_t iterationsPerSight, URNG&);
+    const std::size_t iterationsPerSight, URNG&);
 
 // the implementation is done in a HEADER file:
 #include "su2sweepImplementation.h"

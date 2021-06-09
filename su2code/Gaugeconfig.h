@@ -13,51 +13,51 @@ there are four parallel transports (one for any spacetime direction)
 to be stored. */
 class Gaugeconfig
 {
-	using parallelTransport = SU2matrix;
-	// we need a 5 dimensional array to store
-	// the data. the innermost index will denote
-	// time, then follow the three space dimensions
-	// and the outmost index indicates the direction
-	// of the parallel transport.
-	using container = 	std::vector<std::vector<
-						std::vector<std::vector<
-						std::vector<parallelTransport>>>>>;
-	// to store the lattice lengths
-	using size = typename container::size_type;
+    using parallelTransport = SU2matrix;
+    // we need a 5 dimensional array to store
+    // the data. the innermost index will denote
+    // time, then follow the three space dimensions
+    // and the outmost index indicates the direction
+    // of the parallel transport.
+    using container =     std::vector<std::vector<
+                        std::vector<std::vector<
+                        std::vector<parallelTransport>>>>>;
+    // to store the lattice lengths
+    using size = typename container::size_type;
 
-	container parallelTransports {};
+    container parallelTransports {};
 
 public:
-	// number of spacetime dimensions:
-	static const size numSpacetimeDim { 4 };
+    // number of spacetime dimensions:
+    static const size numSpacetimeDim { 4 };
 
-	//////// implementation of basic methods /////////
-	Gaugeconfig() = default; // default constructor
+    //////// implementation of basic methods /////////
+    Gaugeconfig() = default; // default constructor
 
-	// trivial constructor:
-	Gaugeconfig(container input)
-		{ parallelTransports = input; }
+    // trivial constructor:
+    Gaugeconfig(container input)
+        { parallelTransports = input; }
 
-	// returns the time/space size
-	long int getTimeSize() const { return static_cast<long int>(parallelTransports.size()); }
-	long int getSpaceSize() const {return static_cast<long int>(parallelTransports[0].size());}
+    // returns the time/space size
+    long int getTimeSize() const { return static_cast<long int>(parallelTransports.size()); }
+    long int getSpaceSize() const {return static_cast<long int>(parallelTransports[0].size());}
 
-	////////// signatures of more advanced methods /////////
+    ////////// signatures of more advanced methods /////////
 
-	// constructor by specifying space and time size. The 
-	// parallel transports will b initialised w/ their default
-	// constructor.
-	Gaugeconfig(const size timeSize, const size spaceSize);
+    // constructor by specifying space and time size. The 
+    // parallel transports will b initialised w/ their default
+    // constructor.
+    Gaugeconfig(const size timeSize, const size spaceSize);
 
-	// for simple access using parantheses. x will denote the
-	// spacetime lattice sight, mu the direction of the 
-	// parallel transport.
+    // for simple access using parantheses. x will denote the
+    // spacetime lattice sight, mu the direction of the 
+    // parallel transport.
 
-	SU2matrix& operator()(const std::vector<long int> x,
-					  			   const std::size_t mu);
+    SU2matrix& operator()(const std::vector<long int> x,
+                                     const std::size_t mu);
 
-	const SU2matrix& operator()(const std::vector<long int> x,
-					  			   const std::size_t mu) const;
+    const SU2matrix& operator()(const std::vector<long int> x,
+                                    const std::size_t mu) const;
 };
 
 // two functions to initialise the configuration: for a cold start,

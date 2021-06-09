@@ -17,38 +17,38 @@
 int main()
 {
 
-	// for random number genration:
-	std::random_device rd {}; // to generate the seed for...
-	std::mt19937 engine { rd() }; // Mersenne twister generator
+    // for random number genration:
+    std::random_device rd {}; // to generate the seed for...
+    std::mt19937 engine { rd() }; // Mersenne twister generator
 
-	// lattice parameters
-	const std::size_t timeSize { 16 };
-	const std::size_t spaceSize { 8 };
-	const double deltaInit { 0. };
+    // lattice parameters
+    const std::size_t timeSize { 16 };
+    const std::size_t spaceSize { 8 };
+    const double deltaInit { 0. };
 
-	// initial configuration:
-	Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
+    // initial configuration:
+    Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
 
-	// sweep parameters:
-	const double beta { 1. };
-	const double delta { .1 };
-	const std::size_t numberOfSweeps { 5 };
-	const std::size_t iterationsPerSight { 10 };
+    // sweep parameters:
+    const double beta { 1. };
+    const double delta { .1 };
+    const std::size_t numberOfSweeps { 5 };
+    const std::size_t iterationsPerSight { 10 };
 
-	// to save observables:
-	const std::string dataDir { "../data/" };
-	const std::string filename { "firstSeriousSimulation^^.txt" };
-	std::vector<double> energy(numberOfSweeps, 0.);
+    // to save observables:
+    const std::string dataDir { "../data/" };
+    const std::string filename { "firstSeriousSimulation^^.txt" };
+    std::vector<double> energy(numberOfSweeps, 0.);
 
     // to measure the time:
     struct timeval tStart, tEnd;
     gettimeofday(&tStart, NULL);
 
-	std::cout << "performing " << numberOfSweeps << " sweeps: " << std::flush;
-	for (std::size_t i {0}; i < numberOfSweeps; i++)
-	{
-		energy[i] = gaugeEnergy(U);
-		sweep(U, beta, delta, iterationsPerSight, engine);
+    std::cout << "performing " << numberOfSweeps << " sweeps: " << std::flush;
+    for (std::size_t i {0}; i < numberOfSweeps; i++)
+    {
+        energy[i] = gaugeEnergy(U);
+        sweep(U, beta, delta, iterationsPerSight, engine);
         if (!(i%1000))
         {
             std::cout << i / 1000;
@@ -57,8 +57,8 @@ int main()
         {
             std::cout << '#';
         }
-	}
-	std::cout << '\n';
+    }
+    std::cout << '\n';
 
     gettimeofday(&tEnd, NULL);
 
@@ -73,23 +73,23 @@ int main()
     std::cout << min << "min, ";
     std::cout << sec + 1.e-6*usec << "s." << std::endl;
 
-	std::cout << "zero if writing successful: ";
-	std::cout << writeVector(energy, dataDir + filename) << '\n';
-
-	// log the parameters:
-	std::ofstream log;
-	log.open(dataDir + "allSimulations.log", std::ios::app); // append mode
-	log<< "# ";
-	log<< "deltaInit = " << deltaInit << ", ";
-	log<< "delta = " << delta << ", ";
-	log<< "beta = " << beta << ", ";
-	log<< "numberOfSweeps = " << numberOfSweeps << ", ";
-	log<< "iterationsPerSight = " << iterationsPerSight << ", ";
-	log<< "timeSize = " << timeSize << ", ";
-	log<< "spaceSize = " << spaceSize << ", ";
-	log<< "filename: " << filename << ", ";
-    log << "duration: " << hour << 'h' << min << "min" << sec + 1.e-6*usec << "s, ";
-	const time_t now { std::time(0) };
-	log << std::ctime(&now);
-	log.close();
+//    std::cout << "zero if writing successful: ";
+//    std::cout << writeVector(energy, dataDir + filename) << '\n';
+//
+//    // log the parameters:
+//    std::ofstream log;
+//    log.open(dataDir + "allSimulations.log", std::ios::app); // append mode
+//    log<< "# ";
+//    log<< "deltaInit = " << deltaInit << ", ";
+//    log<< "delta = " << delta << ", ";
+//    log<< "beta = " << beta << ", ";
+//    log<< "numberOfSweeps = " << numberOfSweeps << ", ";
+//    log<< "iterationsPerSight = " << iterationsPerSight << ", ";
+//    log<< "timeSize = " << timeSize << ", ";
+//    log<< "spaceSize = " << spaceSize << ", ";
+//    log<< "filename: " << filename << ", ";
+//    log << "duration: " << hour << 'h' << min << "min" << sec + 1.e-6*usec << "s, ";
+//    const time_t now { std::time(0) };
+//    log << std::ctime(&now);
+//    log.close();
 }
