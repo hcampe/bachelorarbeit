@@ -61,11 +61,11 @@ int main()
         sweep(U, beta, delta, iterationsPerSight, engine);
         if (!(i%1000))
         {
-            std::cout << i / 1000;
+            std::cout << i / 1000 << std::flush;
         }
         else if (!(i%100))
         {
-            std::cout << '#';
+            std::cout << '#' << std::flush;
         }
     }
 
