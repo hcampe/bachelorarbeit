@@ -1,5 +1,6 @@
 #include "vector_operations.h"
 
+#include <iomanip> // to manipulate the displayed precision
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -34,6 +35,7 @@ int writeVector(const std::vector<double>& arr,
                 const std::string& filename)
 {
     std::ofstream out(filename);
+    out << std::setprecision(15); // to achieve max precision for the doubles
 
     for (std::size_t i {0}; i < arr.size(); i++)
     {

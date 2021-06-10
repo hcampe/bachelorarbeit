@@ -48,7 +48,7 @@ int main()
     std::cout << "-> A*A = " << A*A << std::endl;
 
     std::cout << "\n//////// intermezzo: finding the best version of pi /////////\n";
-    std::cout << std::setprecision(16);
+    std::cout << std::setprecision(15);
     std::cout << "exact value:        3.14159265358979323846... (Wikipedia)\n";
     std::cout << "M_PI from cmath:    " << M_PI << '\n';
     std::cout << "4*arctan(1):        " << 4*atan(1.) << '\n';
