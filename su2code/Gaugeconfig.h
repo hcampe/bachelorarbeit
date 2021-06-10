@@ -19,7 +19,7 @@ class Gaugeconfig
     // time, then follow the three space dimensions
     // and the outmost index indicates the direction
     // of the parallel transport.
-    using container =     std::vector<std::vector<
+    using container =   std::vector<std::vector<
                         std::vector<std::vector<
                         std::vector<parallelTransport>>>>>;
     // to store the lattice lengths
