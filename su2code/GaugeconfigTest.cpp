@@ -17,11 +17,12 @@ int main()
 
     std::cout << "setting that element to iPauliX: ";    
     U({0,0,0,0}, 0) = iPauliX();
-    std::cout << "U({0,0,0,0}, 0) = " << U({0,0,0,0}, 0) << '\n';
 
     std::cout << "\n//////////// testing cold start //////////\n";
     U = coldStart(5,2);
     std::cout << "accessing first element: U({0,0,0,0}, 0) = " << U({0,0,0,0}, 0) << '\n';
+    std::cout << "U({0,0,0,0}, 0) = " << U({0,0,0,0}, 0) << '\n';
+    std::cout << "U({4,1,1,1}, 3) = " << U({4,1,1,1}, 3) << std::endl;
 
     std::cout << "\n////////// testing hot start /////////////\n";
     std::random_device rd {}; // to generate the seed for...
@@ -34,6 +35,8 @@ int main()
     std::cout << "U({5,3,3,3}, 0) = " << U({5,3,3,3}, 0) << '\n';
     std::cout << "U({-1,-1,-1,-1}, 0) = " << U({-1,-1,-1,-1}, 0) << '\n';
     std::cout << "U({4,2,2,2}, 0) = " << U({4,2,2,2}, 0) << '\n';
+    std::cout << "U({1,1,1,1}, 1) = " << U({1,1,1,1}, 1) << std::endl;
+    std::cout << "U({6,4,4,4}, 1) = " << U({6,4,4,4}, 1) << std::endl;
 
     return 0;
 }
