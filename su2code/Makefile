@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Wpedantic -O3
+CXXFLAGS = -Wall -Wpedantic
 # -Wall & -Wpedantic for additional warnings
 # -fopenmp for openmp (multi threading)
 # -O3 for automatic (black box) optimisation by the compiler
