@@ -37,7 +37,7 @@ int main()
 
     // to save observables:
     const std::string dataDir { "../data/" };
-    const std::string filename { "moreRenormalisation.txt" };
+    const std::string filename { "evenMoreRenormalisation.txt" };
     std::vector<double> energy(numberOfSweeps, 0.);
 
     // to measure the time:
