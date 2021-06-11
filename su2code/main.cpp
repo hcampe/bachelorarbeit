@@ -32,12 +32,12 @@ int main()
     // sweep parameters:
     const double beta { 1. };
     const double delta { .1 };
-    const std::size_t numberOfSweeps { 10 };
+    const std::size_t numberOfSweeps { 10000 };
     const std::size_t iterationsPerSight { 10 };
 
     // to save observables:
     const std::string dataDir { "../data/" };
-    const std::string filename { "maxPrecisionDoubles.txt" };
+    const std::string filename { "moreRenormalisation.txt" };
     std::vector<double> energy(numberOfSweeps, 0.);
 
     // to measure the time:

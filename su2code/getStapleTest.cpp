@@ -20,6 +20,7 @@ int main()
     V({1,1,1,1}, 0) = unity();
     std::cout << "getStaple(V,x,mu) = " << getStaple(V,x,mu) << std::endl;
 
+
 //    std::cout << "fill U w/ random matrices...\n";
 //    std::random_device rd {}; // to generate the seed for...
 //    std::mt19937 engine { rd() }; // Mersenne twister generator
