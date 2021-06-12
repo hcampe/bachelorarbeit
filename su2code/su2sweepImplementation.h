@@ -15,6 +15,7 @@ sweep(Gaugeconfig& U, const double beta, const double delta,
 {
     std::vector<long int> x(Gaugeconfig::numSpacetimeDim, 0);
     SU2matrix R; // R stands for "random"^^
+    SU2matrix K; // for the staple
     SU2matrix Unew;
     double deltaS;
     std::uniform_real_distribution<double> rDist {0., 1.};
@@ -34,8 +35,9 @@ sweep(Gaugeconfig& U, const double beta, const double delta,
                         {
                             R = randomSU2(engine, delta);
                             Unew = U(x, mu) * R;
-                            deltaS = -.5 * beta * real(trace(
-                                        (Unew - U(x, mu))*getStaple(U, x, mu)));
+                            K = getStaple(U, x, mu);
+                            deltaS = .5 * beta * 
+                                (trace(U(x, mu) * K) - trace(Unew * K));
                             if (deltaS < 0. or (rDist(engine) < exp(-deltaS)))
                             {
                                 Unew.renormalise();

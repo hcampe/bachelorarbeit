@@ -37,7 +37,7 @@ int main()
 
     // to save observables:
     const std::string dataDir { "../data/" };
-    const std::string filename { "withoutCompilerFlag.txt" };
+    const std::string filename { "formulaAsInCPscript.txt" };
     std::vector<double> energy(numberOfSweeps, 0.);
 
     // to measure the time:

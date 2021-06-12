@@ -2,7 +2,7 @@
 
 #include "SU2.h"
 
-std::complex<double> trace(const SU2matrix& U)
+double trace(const SU2matrix& U)
 {
     return 2*real(U[0]);
 }

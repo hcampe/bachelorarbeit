@@ -30,7 +30,7 @@ double gaugeEnergy(const Gaugeconfig& U)
                     {
                         for (std::size_t mu { 0 }; mu < nu; mu++)
                         {
-                            energy += real(trace(getPlaquette(U, x, mu, nu)));
+                            energy += trace(getPlaquette(U, x, mu, nu));
                         }
                     }
                 }
