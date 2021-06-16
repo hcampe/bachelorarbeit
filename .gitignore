@@ -1,0 +1,7 @@
+# ignore directories bin, data and su2code:
+bin
+data
+objectFiles
+
+# ignore swap files:
+*.swp

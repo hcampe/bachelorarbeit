@@ -1,0 +1,473 @@
+---
+title: "Die SU(2)-Eichsymmetrie auf einem Gitter"
+author: "Heinrich Campe"
+date: "\\today"
+output:
+    pdf_document:
+        citation_package: biblatex
+        highlight: tango
+        keep_tex: no
+        latex_engine: pdflatex
+        number_sections: yes
+        toc: no
+        toc_depth: 2
+bibliography: references.bib
+link_citation: yes
+lang: de-DE
+header-includes:
+  \usepackage{physics}
+  \usepackage{csquotes}
+  \usepackage{dsfont}
+---
+
+```{r echo=FALSE}
+library(qsimulatR)
+library(knitr)
+library(reticulate)
+library(ggplot2)
+use_python("/usr/local/anaconda3/bin/python")
+knitr::opts_chunk$set(fig.align='center',
+                      fig.width=5,
+                      fig.height=4)
+```
+
+# Das Problem
+Der Metropolisalgorithmus soll auf die Yang-Mills-Wirkung
+\[
+S = \frac{1}{2 g_0^2} \int \dd^4 x 
+F_{\mu \nu}(x) F^{\mu \nu}(x)
+\]
+angewendet werden, welche die Dynamik eines SU($N_\mathrm{c}$)-Eichfeldes beschreibt. Hierbei ist der Feldstärketensor durch
+\[
+F_{\mu \nu}(x) = \partial_\mu A_\nu(x) - \partial_\nu A_\mu(x)
++ i [A_\mu(x), A_\nu(x)]
+\]
+gegeben. Die im Folgenden beschriebene Vorgehensweise ist an die von Petschlies und Urbach [@urbachCPscript] angeleht.
+
+Um die Wirkung auf einem Gitter zu betrachten, werden anstelle des Eichfeldes $A_\mu(x)$ sog. Paralleltransporte $U_\mu(x)$ betrachtet, welche als \enquote{Zeiger} vom Gitterpunkt $x$ in Richtung $\mu$ interpretiert werden können. Anders als das Eichfeld sind die Paralleltransporte Elemente der Eich\emph{gruppe}. Die betrachteten eichinvarianten Objekte sind dann geschlossene Ringe aus solchen Transportern, sog. Wilson-Loops. Im einfachsten Fall sind diese durch die Plaquette gegeben:
+\begin{equation} \label{eq:plaquette}
+U_{\mu \nu}(x) = U_\mu(x) U_\nu(x + a \hat{\mu}) U^\dag_\mu(x + a \hat{\nu}) U^\dag_\nu(x).
+\end{equation}
+Das Gitter $\Lambda$ soll periodische Randbedingungen aufweisen und würfelförmig im Raum sein, wir erhalten also
+\[
+\Lambda = \{0, 1, \dots, L_t-1\}/(0 \sim L_t-1)
+\times \left( \{0, 1, \dots, L_s-1 \} / (0 \sim L_s-1) \right)^3.
+\]
+Hier ist $L_t$ die zeitliche Kantenlänge des Gitters und $L_s$ die räumliche Kantenlänge.
+
+Schließlich erhalten wir die Wilson-Wirkung für das Gitter:
+\[
+S = \frac{\beta}{N_\mathrm{c}} a^4 \sum_x \sum_{\mu < \nu}
+\mathrm{Re} \mathrm{Tr} \left[1 - U_{\mu \nu}(x) \right],
+\]
+welche für $a \rightarrow 0$ in die Yang-Mills-Wirkung übergeht.
+
+Für den Metropolisalgorithmus benötigen wir eine Methode, um die Veränderung der Wirkung durch die Veränderung eines einzelnen Paralleltransports $U_\mu(x)$ zu bestimmen. Hierzu sei der Staple wie folgt definiert:
+\begin{equation} \label{eq:staple}
+K_\mu(x) = \sum_{\nu \neq \mu} \left[
+U_\nu(x + a \hat{\mu}) U^\dag_\mu(x + a \hat{\nu}) U^\dag_\nu(x)\\
++ U^\dag_\nu(x + a\hat{\mu} - a\hat{\nu}) U_\mu^\dag(x - a\hat{\nu}) U_\nu(x - a\hat{\nu})
+\right].
+\end{equation}
+
+Dann ergibt sich für die Änderung der Wirkung
+\[
+\Delta S = -\frac{\beta}{2} \mathrm{Re} \mathrm{Tr}
+\left[\left(U_\mu'(x) - U_\mu(x) \right) \cdot K_\mu(x) \right].
+\]
+
+# Implementation
+## SU(2)
+Zunächst wurde eine Klasse namens ```SU2matrix``` implementiert. Der Name ist etwas widersprüchlich, insofern alsdass ihre Instanzen zwar unitäre komplexe Matrizen sind, aber keine Determinante von 1 haben müssen. Aus der Definition von unitären Matrizen
+\[
+U^\dag U = U U^\dag = \mathds{1}
+\]
+lässt sich ableiten, dass sich jede unitäre $2 \times 2$-Matrix in der Form
+\[
+U =
+\begin{pmatrix}
+a    & b   \\
+-b^* & a^* \\
+\end{pmatrix}
+\]
+darstellen lässt mit
+\[
+a, b \in \mathds{C}, |a|^2 + |b|^2 = 1.
+\]
+Die Klasse speichert also lediglich die Einträge der oberen Zeile einer jeden Matrix. Man kann zeigen, dass sich Matrixmultiplikation im Rahmen dieser Darstellung umsetzen lässt:
+\[
+(a_1, b_1) \cdot (a_2, b_2) = (a_1 b_2 - b_1 b_2^*, a_1 b_2 + b_1 a_2^*).
+\]
+Weitere Matrixoperationen ergeben sich trivial aus der verwendeten Form.
+
+Aufgrund der endlichen Präzision der verwendeten Datentypen für eine betrachtete Matrix $U$ hin und wieder $U \in \mathrm{SU}(2)$ forciert werden. Die geschieht durch
+\[
+(a, b) \mapsto \left(\frac{a}{\sqrt{|a|^2 + |b|^2}}, \frac{b}{\sqrt{|a|^2 + |b|^2}}\right).
+\]
+
+Für den Algorithmus wird es notwendig sein, zufällige SU(2)-Matrizen zu erzeugen. Hierzu nutzen wir den Isomorphismus
+\begin{align*}
+\phi: S^3 &\rightarrow \mathrm{SU}(2),\\
+(x^0, \vec{x}) &\mapsto x^0 \mathds{1} + i \vec{x} \vec{\sigma}.
+\end{align*}
+Unter Verwendung von Kugelkoordinaten
+\[
+\begin{pmatrix}
+x^0 \\
+x^1 \\
+x^2 \\
+x^3
+\end{pmatrix}
+=
+\begin{pmatrix}
+\cos(\chi) \sin(\vartheta) \cos(\varphi) \\
+\sin(\chi) \sin(\vartheta) \cos(\varphi) \\
+\sin(\chi) \sin(\vartheta) \sin(\varphi) \\
+\sin(\chi) \cos(\vartheta)
+\end{pmatrix}
+\]
+kann $x \in S^3$ zufällig generiert werden, indem Zufallzahlen uniform aus den folgenden Intervallen gezogen werden:
+\begin{align*}
+\chi &\in (0, 2 \pi \cdot \delta),\\
+\varphi &\in (0, 2 \pi),\\
+\cos(\vartheta) &\in (-1,1).
+\end{align*}
+Hier kann $\delta > 0$ beliebig klein gewählt werden, sodass die resultierende Matrix nah an $\mathds{1}$ liegt.
+
+Der Klasse zugehörig sind neben Konstrukter etc. also folgende Methoden und Funktionen definiert:
+
+* Matrixmultiplikation durch Überladung von *
+* Matrixaddtion durch Überladung von +, -
+* ```dagger```: hermitische Adjunktion
+* die Spur ```trace```
+* die Renormalisation
+* ein Zufallsgenerator ```randomSU2matrix``` \enquote{nah an $\mathds{1}$}
+
+## Gaugeconfig
+Die zweite Klasse implementiert einen Container für die Paralleltransporte. Hier sind die wichtigsten Methoden:
+
+* ```coldStart``` initialisert ein Gitter mit gewünschten Maßen und setzt alle Paralleltransporte auf $\mathds{1}$
+* ```hotStart``` initialisiert ein Gitter und weist jedem Punkt vier zufällig generierte Paralleltransporte nach einem gegebenen $\delta$ zu
+* ```getStaple``` gibt den nach \ref{eq:staple} generierten Staple für gegebenes $x, \mu$ zurück
+* ```getPlaquette``` gibt die nach \ref{eq:plaquette} generierte Plaquette zurück
+
+Außerdem sind in ```Gaugeconfig``` bereits die periodischen Randbedingungen interpretiert.
+
+# Konkrete Simulation
+Für erste Simulationen wurde ein Gitter der Maße $16 \times 8^3$ mit $\beta = 1$ verwendet. Es wurden 2000 sweeps mit 10 Iterationen je Paralleltransport durchgeführt. Die betrachtete Observable ist die Energie
+\[
+E = \sum_{x \in \Lambda} \sum_{\mu < \nu} \mathrm{Re} \mathrm{Tr}
+\left[ U_{\mu \nu} (x) \right].
+\]
+Außerdem kann auch die durchschnittl. Plaquette
+\[
+P = \frac{E}{6 L_t L_s^3 N_\mathrm{c}}
+\]
+betrachtet werden.
+
+Zur Untersuchung der grds. Funktionsfähigkeit des Systems wurde es mit
+\[
+U_{\mu \nu}(x) = 1 \forall \mu, \nu \in \{0,1,2,3\} \forall x \in \Lambda
+\]
+initialisiert (\enquote{Kaltstart}). Zunächst ist zu beobachten, dass das System in unter 10 Sweeps den Gleichgewichtszustand erreicht:
+
+```{python, echo=FALSE}
+import numpy as np
+import matplotlib.pyplot as plt
+
+timeSize = 16
+spaceSize = 8
+numberOfColours = 2
+
+dataDir = "../data/"
+
+energy = np.loadtxt(dataDir + "firstMistakeFound.txt")
+sweep  = np.arange(2000)
+
+avgPlaquette = energy / (timeSize * spaceSize**3 * numberOfColours * 6)
+plt.plot(sweep[:20], avgPlaquette[:20])
+plt.xlabel("Sweep")
+plt.ylabel("durchschn. Plaquette $P$")
+plt.grid()
+plt.show()
+```
+
+Ab Sweep 10 ist nur noch ein Rauschen um einen bestimmten Wert zu beobachten:
+
+```{python, echo=FALSE}
+sweep = sweep[10:]
+avgPlaquette = avgPlaquette[10:]
+
+Pbar = np.average(avgPlaquette)
+PbarErr = np.sqrt(np.var(avgPlaquette) / np.size(avgPlaquette))
+
+plt.plot(sweep, avgPlaquette)
+plt.xlabel("Sweep")
+plt.ylabel("durchschn. Plaquette $P$")
+plt.title(f"$\overline{{P}} = {Pbar:.5f} \pm {PbarErr:.5f}$")
+plt.grid()
+plt.show()
+```
+Der hier berechnete Standardfehler ist zu klein, da er die Autokorrelation nicht berücksichtigt.
+
+
+
+## Genauere Messung und Berücksichtigung der Autokorrelation
+
+Nun wurde eine längere Messung (10000 Sweeps) durchgeführt. Unter Vernachlässigung der ersten 20 Sweeps sehen die Messwerte für die durchschnittliche Plaquette dann so aus:
+
+```{python, echo=FALSE}
+energy = np.loadtxt(dataDir + "firstSeriousSimulation^^.txt")
+sweep  = np.arange(len(energy))
+energy = energy[20:]
+sweep = sweep[20:]
+
+avgPlaquette = energy / float(timeSize * spaceSize**3 * numberOfColours * 6.)
+Pbar = np.average(avgPlaquette)
+PbarErr = np.sqrt(np.var(avgPlaquette) / np.size(avgPlaquette))
+
+plt.plot(sweep, avgPlaquette)
+plt.xlabel("Sweep")
+plt.ylabel("durchschn. Plaquette $P$")
+#plt.title(f"$\overline{{P}} = {Pbar:.5f} \pm {PbarErr:.5f}$")
+plt.grid()
+plt.show()
+Pbar, PbarErr, len(avgPlaquette)
+np.sum(avgPlaquette) / float(len(avgPlaquette))
+energy[0]
+```
+Außerdem kann die integrierte Autokorrelationszeit bestimmt werden:
+
+```{python, echo=FALSE}
+observables = avgPlaquette
+mu = Pbar
+C = np.empty(len(observables))
+for t in range(len(C)):
+    C[t] = 1/(len(C) - t) *\
+        np.sum((observables[:len(C)-t] - mu)*(observables[t:] - mu))
+
+Gamma = C / C[0]
+GammaVar = np.zeros(len(Gamma))
+for t in range(len(Gamma)):
+    for i in range(min(t + 200, len(Gamma)-t)):
+        GammaVar[t] += (Gamma[i+t] + Gamma[abs(i-t)] - 2*Gamma[i]*Gamma[t])**2
+GammaVar /= len(GammaVar)
+GammaErr = np.sqrt(GammaVar/len(GammaVar))
+```
+
+```{python, echo=FALSE}
+# plt.cla()
+# upToIndex = 10 
+# errorFactor = 1000
+# x = np.arange(0,upToIndex)
+# plt.plot(x, Gamma[:upToIndex], label="$\overline{\Gamma}_{x}$")
+# plt.plot(x, Calternative[:upToIndex], label="new")
+# plt.fill_between(x, Gamma[:upToIndex] - errorFactor*GammaErr[:upToIndex],\
+#                   Gamma[:upToIndex] + errorFactor*GammaErr[:upToIndex],\
+#                   alpha=.2, label = f"${errorFactor} \\times \Delta \Gamma_{{x}}$")
+# plt.xlabel("Abstand der Messungen $t$")
+# plt.ylabel("Autokorrelation $\Gamma$")
+# plt.grid()
+# plt.legend()
+# plt.show()
+
+```
+
+```{python, echo=FALSE}
+W = np.argmax(np.abs(Gamma) < GammaErr)
+tauInt = .5*Gamma[0] + np.sum(Gamma[1:W])
+tauIntErr = np.sqrt(2*(2*W + 1)/len(Gamma)**2)*tauInt
+PbarErrCorr = np.sqrt(2*tauInt)*PbarErr
+```
+\[
+\tau_{\mathrm{int}, P} = `r py$tauInt` \pm `r py$tauIntErr`,
+\]
+
+was dann auch eine genauere Berechnung von $\overline{P}$ und dem dazugehörigen Fehler ermöglicht:
+\[
+\overline{P} = `r py$Pbar` \pm `r py$PbarErrCorr`.
+\]
+
+## Weitere Messungen
+
+```{python, echo=FALSE}
+energy = np.loadtxt(dataDir + "anotherAttemptForComparison.txt")
+sweep  = np.arange(len(energy))
+
+avgPlaquette = energy / (timeSize * spaceSize**3 * numberOfColours * 6)
+plt.plot(sweep[:20], avgPlaquette[:20])
+plt.xlabel("Sweep")
+plt.ylabel("durchschn. Plaquette $P$")
+plt.grid()
+plt.show()
+
+sweep = sweep[1000:]
+avgPlaquette = avgPlaquette[1000:]
+
+Pbar = np.average(avgPlaquette)
+PbarErr = np.sqrt(np.var(avgPlaquette) / np.size(avgPlaquette))
+
+Pbar, PbarErr
+
+```
+
+```{python, echo=FALSE}
+energy = np.loadtxt(dataDir + "maxPrecisionDoubles.txt")
+sweep  = np.arange(len(energy))
+
+avgPlaquette = energy / (timeSize * spaceSize**3 * numberOfColours * 6)
+plt.plot(sweep[:20], avgPlaquette[:20])
+plt.xlabel("Sweep")
+plt.ylabel("durchschn. Plaquette $P$")
+plt.grid()
+plt.show()
+
+sweep = sweep[1000:]
+avgPlaquette = avgPlaquette[1000:]
+
+Pbar = np.average(avgPlaquette)
+PbarErr = np.sqrt(np.var(avgPlaquette) / np.size(avgPlaquette))
+
+Pbar, PbarErr
+avgPlaquette[:10]
+```
+```{python, echo=FALSE}
+energy = np.loadtxt(dataDir + "withoutCompilerFlag.txt")
+sweep  = np.arange(len(energy))
+
+avgPlaquette = energy / (timeSize * spaceSize**3 * numberOfColours * 6)
+plt.plot(sweep[:40], avgPlaquette[:40])
+plt.xlabel("Sweep")
+plt.ylabel("durchschn. Plaquette $P$")
+plt.grid()
+plt.show()
+
+sweep = sweep[1000:]
+avgPlaquette = avgPlaquette[1000:]
+
+Pbar = np.average(avgPlaquette)
+PbarErr = np.sqrt(np.var(avgPlaquette) / np.size(avgPlaquette))
+
+Pbar, PbarErr
+```
+
+```{python, echo=False}
+PbarNew = 0
+for i in range(1000, len(avgPlaquette)):
+  PbarNew += avgPlaquette[i]
+
+PbarNew /= (len(avgPlaquette) - 1000)
+PbarNew
+```
+```{python, echo=FALSE}
+timeSize * spaceSize**3 * numberOfColours * 6
+timeSize, spaceSize, numberOfColours
+```
+
+```{r, echo=FALSE}
+dataDir <- "../data/"
+df <- read.csv(paste0(dataDir, "withoutCompilerFlag.txt"), header=FALSE)
+colnames(df) = c("energy")
+timeSize <- 16L
+spaceSize <- 8L
+numberOfColours <- 2L
+
+df$iteration = rownames(df)
+df$avgPlaquette = df$energy / (timeSize * spaceSize^3 * numberOfColours * 6)
+
+Pbar = mean(df$avgPlaquette[c(1001:length(Pbar))])
+PbarErr = sqrt(var(df$avgPlaquette[c(1001:length(Pbar))]) / length(df$avgPlaquette[c(1001:length(Pbar))]))
+Pbar
+PbarErr
+```
+```{r}
+PbarNew = 0
+for (i in 1000:length(df$avgPlaquette))
+{
+  PbarNew = PbarNew + df$avgPlaquette[i]
+}
+PbarNew = PbarNew / (length(df$avgPlaquette) - 1000)
+PbarNew
+```
+
+\[
+\beta = 0.5:
+\]
+
+```{python, echo=FALSE}
+energy = np.loadtxt(dataDir + "beta0.5.txt")
+sweep  = np.arange(len(energy))
+
+avgPlaquette = energy / (timeSize * spaceSize**3 * numberOfColours * 6)
+plt.plot(sweep[:20], avgPlaquette[:20])
+plt.xlabel("Sweep")
+plt.ylabel("durchschn. Plaquette $P$")
+plt.grid()
+plt.show()
+
+sweep = sweep[1000:]
+avgPlaquette = avgPlaquette[1000:]
+
+Pbar = np.average(avgPlaquette)
+PbarErr = np.sqrt(np.var(avgPlaquette) / np.size(avgPlaquette))
+
+Pbar, PbarErr
+```
+
+```{python, echo=FALSE}
+energy = np.loadtxt(dataDir + "latticeSize10000.txt")
+sweep  = np.arange(2000)
+
+timeSize = 10
+spaceSize = 10
+
+avgPlaquette = energy / (timeSize * spaceSize**3 * numberOfColours * 6)
+plt.plot(sweep[:20], avgPlaquette[:20])
+plt.xlabel("Sweep")
+plt.ylabel("durchschn. Plaquette $P$")
+plt.grid()
+plt.show()
+
+sweep = sweep[1000:]
+avgPlaquette = avgPlaquette[1000:]
+
+Pbar = np.average(avgPlaquette)
+PbarErr = np.sqrt(np.var(avgPlaquette) / np.size(avgPlaquette))
+
+Pbar, PbarErr
+
+```
+
+```{r, echo=FALSE, return=FALSE}
+dataDir <- "../data/"
+df <- read.csv(paste0(dataDir, "frmColdStart.txt"), header=FALSE)
+colnames(df) = c("energy")
+timeSize <- 16L
+spaceSize <- 8L
+numberOfColours <- 2L
+
+df["iteration"] = rownames(df)
+df["avgPlaquette"] = df["energy"] / (timeSize * spaceSize^3 * numberOfColours * 4 * 6)
+ggplot(df, mapping = aes(x = iteration, y = energy, group=1)) +
+  geom_line() +
+  scale_x_discrete(breaks=NULL)
+```
+
+```{r, echo=FALSE, return=FALSE}
+plot(x = df$iteration, y = df$energy)
+```
+
+```{r, echo=FALSE, return=FALSE}
+dataDir <- "../data/"
+df <- read.csv(paste0(dataDir, "frmHotStart.txt"), header=FALSE)
+colnames(df) = c("energy")
+timeSize <- 16L
+spaceSize <- 8L
+numberOfColours <- 2L
+
+df["iteration"] = rownames(df)
+df["avgPlaquette"] = df["energy"] / (timeSize * spaceSize^3 * numberOfColours * 4 * 6)
+ggplot(df, mapping = aes(x = iteration, y = avgPlaquette, group=1)) +
+  geom_line() +
+  scale_x_discrete(breaks=NULL)
+```
