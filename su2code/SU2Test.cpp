@@ -47,6 +47,12 @@ int main()
     std::cout << "A = " << A << std::endl;
     std::cout << "-> A*A = " << A*A << std::endl;
 
+    std::cout << "\n//////// testing the *= operator: //////////////\n";
+    A = iPauliX;
+    std::cout << "A = iPauliX. A = " << A << std::endl;
+    A *= iPauliY();
+    std::cout << "A *= iPauliY. A= " << A << std::endl;
+
     std::cout << "\n//////// intermezzo: finding the best version of pi /////////\n";
     std::cout << std::setprecision(15);
     std::cout << "exact value:        3.14159265358979323846... (Wikipedia)\n";

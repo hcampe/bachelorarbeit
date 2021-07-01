@@ -59,6 +59,13 @@ SU2matrix operator*(const SU2matrix& A, const SU2matrix& B)
 }
 
 
+void operator*=(SU2matrix& A, const SU2matrix& B)
+{
+    A.setUpperRow({A[0]*B[0] - A[1]*conj(B[1]),
+                   A[0]*B[1] + A[1]*conj(B[0])});
+}
+
+
 SU2matrix operator+(const SU2matrix& A, const SU2matrix& B)
 {
     return SU2matrix({A[0] + B[0], A[1] + B[1]});

@@ -63,6 +63,8 @@ std::complex<double> trace(const SU2matrix&);
 // overloading the * operator for matrix calculation:
 SU2matrix operator*(const SU2matrix&, const SU2matrix&);
 
+void operator*=(SU2matrix&, const SU2matrix&);
+
 // this does not make much sense for a matrix of the
 // SU(2) group but it will b needed later on:
 SU2matrix operator+(const SU2matrix&, const SU2matrix&);
