@@ -34,8 +34,8 @@ sweep(Gaugeconfig& U, const double beta, const double delta,
                         {
                             R = randomSU2(engine, delta);
                             Unew = U(x, mu) * R;
-                            deltaS = -.5 * beta * real(trace(
-                                        (Unew - U(x, mu))*getStaple(U, x, mu)));
+                            deltaS = -.5 * beta * trace(
+                                        (Unew - U(x, mu))*getStaple(U, x, mu));
                             if (deltaS < 0. or (rDist(engine) < exp(-deltaS)))
                             {
                                 Unew.renormalise();

@@ -58,7 +58,9 @@ public:
 
 // compute the trace of any SU(2) matrix. This is not a method since 
 // trace(U) is closer to the mathematical formulation tr(U) than U.trace()
-std::complex<double> trace(const SU2matrix&);
+// since the trace of a unitary matrix will always b real, it is returned as
+// double.
+double trace(const SU2matrix&);
 
 // overloading the * operator for matrix calculation:
 SU2matrix operator*(const SU2matrix&, const SU2matrix&);
