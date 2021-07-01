@@ -17,7 +17,7 @@ objectFiles = $(patsubst ${src}/%.cpp, ${obj}/%.o, ${sourceFiles})
 
 
 all: ${bin}/analysisTest ${bin}/GaugeconfigTest ${bin}/getStapleTest\
-		${bin}/SU2Test ${bin}/vector_operationsTest ${bin}/main
+		${bin}/SU2Test ${bin}/vector_operationsTest ${bin}/wilsonLoopsTest ${bin}/main
 
 # all test executables w/ their corr. dependencies
 # $^ references all prerequisites
@@ -36,6 +36,8 @@ ${bin}/SU2Test: ${obj}/SU2.o ${obj}/SU2Test.o
 ${bin}/vector_operationsTest: ${obj}/vector_operations.o ${obj}/vector_operationsTest.o
 	${CXX} ${CXXFLAGS} $^ -o $@
 
+${bin}/wilsonLoopsTest: ${obj}/wilsonLoopsTest.o ${obj}/wilsonLoops.o ${obj}/Gaugeconfig.o ${obj}/SU2.o ${obj}/analysis.o
+	${CXX} ${CXXFLAGS} $^ -o $@
 
 # build the main executable -- the object files for testing will 
 # not be taken into account.
