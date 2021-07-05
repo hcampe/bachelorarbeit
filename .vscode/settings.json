@@ -1,0 +1,24 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/pianocampus/ownCloud/uni/bachelorarbeit/su2/bin",
+            "binaryPath": "/home/pianocampus/ownCloud/uni/bachelorarbeit/su2/bin/wilsonLoopsTests",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/home/pianocampus/ownCloud/uni/bachelorarbeit/su2/bin",
+            "binaryPath": "/home/pianocampus/ownCloud/uni/bachelorarbeit/su2/bin/wilsonLoopsTest",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/home/pianocampus/ownCloud/uni/bachelorarbeit/su2/bin",
+            "binaryPath": "/home/pianocampus/ownCloud/uni/bachelorarbeit/su2/bin/SU2Test",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/home/pianocampus/ownCloud/uni/bachelorarbeit/su2/bin",
+            "binaryPath": "/home/pianocampus/ownCloud/uni/bachelorarbeit/su2/bin/main",
+            "binaryArgs": []
+        }
+    ]
+}
