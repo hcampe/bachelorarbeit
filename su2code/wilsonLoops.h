@@ -24,4 +24,14 @@ V_{\mu \nu}(x, m, n) = L_\mu(x, m) * L_\nu(x + m\mu, n)
 SU2matrix getPlanarLoop(const Gaugeconfig& U, const std::vector<long int> x,
     const size_t mu, const size_t nu, const size_t a, const size_t b);
 
+
+/*
+returns a vector consisting of the traces of planar loops. The
+sizes of the rectangles are specified by M & N.
+*/
+std::vector<double> getLoopTraces(const Gaugeconfig& U,
+                                 const size_t mu, const size_t nu,
+                                 const std::vector<size_t> M,
+                                 const std::vector<size_t> N);
+
 #endif

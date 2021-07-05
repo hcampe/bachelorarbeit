@@ -9,8 +9,8 @@ SU2matrix getStraightLine(const Gaugeconfig& U, const std::vector<long int> x,
 
     for (size_t i {0}; i < n; i++)
     {
-        y[mu]++;
         output *= U(y, mu);
+        y[mu]++;
     }
 
     return output;
@@ -32,4 +32,19 @@ SU2matrix getPlanarLoop(const Gaugeconfig& U, const std::vector<long int> x,
     V *= getStraightLine(U, y, nu, n).dagger();
 
     return V;
+}
+
+std::vector<double> getLoopTraces(const Gaugeconfig& U,
+                                 const size_t mu, const size_t nu,
+                                 const std::vector<size_t> M,
+                                 const std::vector<size_t> N)
+{
+    std::vector<double> traces(M.size(), 0.);
+
+    for (size_t i {0}; i < traces.size(); i++)
+    {
+        traces[i] = trace(getPlanarLoop(U, {0,0,0,0}, mu, nu, M[i], N[i]));
+    }
+
+    return traces;
 }
