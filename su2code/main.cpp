@@ -5,6 +5,7 @@
 #include <iostream>
 #include <random> // for the random generator
 #include <sys/time.h> // to measure the computation time
+#include <vector>
 
 #include "analysis.h"
 #include "Gaugeconfig.h"
@@ -12,6 +13,7 @@
 #include "su2sweep.h"
 #include "SU2.h"
 #include "vector_operations.h"
+#include "wilsonLoops.h"
 
 
 int main()
@@ -22,52 +24,60 @@ int main()
     std::mt19937 engine { rd() }; // Mersenne twister generator
 
     // lattice parameters
-    const std::size_t timeSize { 16 };
-    const std::size_t spaceSize { 8 };
+    const std::size_t timeSize { 10 };
+    const std::size_t spaceSize { 5 };
     const double deltaInit { 0. };
 
     // initial configuration:
     Gaugeconfig U { hotStart(timeSize, spaceSize, engine, deltaInit) };
 
     // sweep parameters:
-    const double beta { 1. };
+    const double beta { 2.3 };
     const double delta { .1 };
     const std::size_t numberOfSweeps { 10 };
     const std::size_t iterationsPerSight { 10 };
 
     // to save observables:
     const std::string dataDir { "../data/" };
-    const std::string filename { "maxPrecisionDoubles.txt" };
-    std::vector<double> energy(numberOfSweeps, 0.);
+    const std::string filename { "wilsonLoopsFirstRun.txt" };
+    std::vector<std::vector<double>> results;
+
+    // for the Wilson loops:
+    size_t mu {0};
+    size_t nu {1};
+    std::vector<size_t> M {6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9}; // time dim
+    std::vector<size_t> N {1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4}; // space dim
+    results.push_back(std::vector<double>(M.begin(), M.end()));
+    results.push_back(std::vector<double>(N.begin(), N.end()));
 
     // to measure the time:
     struct timeval tStart, tEnd;
     gettimeofday(&tStart, NULL);
 
     // just for testing:
-    std::cout << "performing " << numberOfSweeps << " sweeps." << std::endl;
-    for (std::size_t i {0}; i < numberOfSweeps; i++)
-    {
-        energy[i] = gaugeEnergy(U);
-        std::cout << "P[" << i << "] = " << energy[i]/(6 * 2 * timeSize * spaceSize*spaceSize*spaceSize) << std::endl;
-        sweep(U, beta, delta, iterationsPerSight, engine);
-    }
-
-    // 'serious run' with progress bar
-//    std::cout << "performing " << numberOfSweeps << " sweeps: " << std::flush;
+//    std::cout << "performing " << numberOfSweeps << " sweeps." << std::endl;
 //    for (std::size_t i {0}; i < numberOfSweeps; i++)
 //    {
-//        energy[i] = gaugeEnergy(U);
+//        results.push_back(getLoopTraces(U, mu, nu, M, N));
 //        sweep(U, beta, delta, iterationsPerSight, engine);
-//        if (!(i%1000))
-//        {
-//            std::cout << i / 1000 << std::flush;
-//        }
-//        else if (!(i%100))
-//        {
-//            std::cout << '#' << std::flush;
-//        }
 //    }
+
+    // 'serious run' with progress bar
+    std::cout << "performing " << numberOfSweeps << " sweeps: " << std::flush;
+    for (std::size_t i {0}; i < numberOfSweeps; i++)
+    {
+        results.push_back(getLoopTraces(U, mu, nu, M, N));
+        sweep(U, beta, delta, iterationsPerSight, engine);
+
+        if (!(i%1000))
+        {
+            std::cout << i / 1000 << std::flush;
+        }
+        else if (!(i%100))
+        {
+            std::cout << '#' << std::flush;
+        }
+    }
 
     std::cout << '\n';
     gettimeofday(&tEnd, NULL);
@@ -83,8 +93,8 @@ int main()
     std::cout << min << "min, ";
     std::cout << sec + 1.e-6*usec << "s." << std::endl;
 
-//    std::cout << "zero if writing successful: ";
-//    std::cout << writeVector(energy, dataDir + filename) << '\n';
+    std::cout << "zero if writing successful: ";
+    std::cout << write_2d(results, dataDir + filename, ',') << '\n';
 //
 //    // log the parameters:
 //    std::ofstream log;
