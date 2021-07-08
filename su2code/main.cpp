@@ -24,7 +24,7 @@ int main()
     std::mt19937 engine { rd() }; // Mersenne twister generator
 
     // lattice parameters
-    const std::size_t timeSize { 10 };
+    const std::size_t timeSize { 20 };
     const std::size_t spaceSize { 5 };
     const double deltaInit { 0. };
 
@@ -39,13 +39,13 @@ int main()
 
     // to save observables:
     const std::string dataDir { "../data/" };
-    const std::string filename { "wilsonLoopsFirstRun.txt" };
+    const std::string filename { "wilsonLoopsdoubleTimeSize.txt" };
     std::vector<std::vector<double>> results;
 
     // for the Wilson loops:
     size_t mu {0};
     size_t nu {1};
-    std::vector<size_t> M {6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9}; // time dim
+    std::vector<size_t> M {16,16,16,16,17,17,17,17,18,18,18,18,19,19,19,19}; // time dim
     std::vector<size_t> N {1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4}; // space dim
     results.push_back(std::vector<double>(M.begin(), M.end()));
     results.push_back(std::vector<double>(N.begin(), N.end()));
