@@ -35,9 +35,9 @@ SU2matrix getPlanarLoop(const Gaugeconfig& U, const std::vector<long int> x,
 }
 
 std::vector<double> getLoopTraces(const Gaugeconfig& U,
-                                 const size_t mu, const size_t nu,
-                                 const std::vector<size_t> M,
-                                 const std::vector<size_t> N)
+                                  const size_t mu, const size_t nu,
+                                  const std::vector<size_t> M,
+                                  const std::vector<size_t> N)
 {
     std::vector<double> traces(M.size(), 0.);
 
