@@ -43,8 +43,6 @@ int main()
     std::vector<std::vector<double>> results;
 
     // for the Wilson loops:
-    size_t mu {0};
-    size_t nu {1};
     std::vector<size_t> M {16,16,16,16,17,17,17,17,18,18,18,18,19,19,19,19}; // time dim
     std::vector<size_t> N {1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4}; // space dim
     results.push_back(std::vector<double>(M.begin(), M.end()));
@@ -66,7 +64,9 @@ int main()
     std::cout << "performing " << numberOfSweeps << " sweeps: " << std::flush;
     for (std::size_t i {0}; i < numberOfSweeps; i++)
     {
-        results.push_back(getLoopTraces(U, mu, nu, M, N));
+        results.push_back(getLoopTraces(U, 0, 1, M, N));
+        results.push_back(getLoopTraces(U, 0, 2, M, N));
+        results.push_back(getLoopTraces(U, 0, 3, M, N));
         sweep(U, beta, delta, iterationsPerSight, engine);
 
         if (!(i%1000))
