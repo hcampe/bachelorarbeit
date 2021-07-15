@@ -32,6 +32,8 @@ int main()
 
     std::cout << "\n///////// more interesting test of the planar loop /////////\n";
     std::cout << "put iX, iY, iZ, iX, ... on a 3 x 4 rectangle in dim. 1, 2" << std::endl;
+    U = hotStart(5, 5, engine, .1); // "resetting" the configuration
+
     U({0,0,0,0}, 1) = iPauliX();
     U({0,1,0,0}, 1) = iPauliY();
     U({0,2,0,0}, 1) = iPauliZ();
@@ -54,6 +56,8 @@ int main()
     std::cout << getPlanarLoop(U, {0,0,0,0}, 1, 2, 3, 4) << std::endl;
 
     std::cout << "put iX, iY, iZ, iX, ... on a 3 x 3 rectangle in dim. 1, 2" << std::endl;
+    U = hotStart(5, 5, engine, .1); // "resetting" the configuration
+
     U({0,0,0,0}, 1) = iPauliX();
     U({0,1,0,0}, 1) = iPauliY();
     U({0,2,0,0}, 1) = iPauliZ();
@@ -74,6 +78,8 @@ int main()
     std::cout << getPlanarLoop(U, {0,0,0,0}, 1, 2, 3, 3) << std::endl;
 
     std::cout << "put iX, iY, iZ, iX,... on a 1 x 2 rectangle in dim. 0, 3\n";
+    U = hotStart(5, 5, engine, .1); // "resetting" the configuration
+
     U({2,2,2,2}, 0) = iPauliX();
 
     U({3,2,2,2}, 3) = iPauliY();
