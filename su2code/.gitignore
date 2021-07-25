@@ -1,9 +1,7 @@
+
 # ignore directories bin, data and su2code:
-bin
-data
-objectFiles
-ubonn-thesis-9.0.0
-.vscode
 
 # ignore swap files:
 *.swp
+*.sw
+*.swo
