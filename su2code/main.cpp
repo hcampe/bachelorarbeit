@@ -24,8 +24,8 @@ int main()
     std::mt19937 engine { rd() }; // Mersenne twister generator
 
     // lattice parameters
-    const std::size_t timeSize { 20 };
-    const std::size_t spaceSize { 5 };
+    const std::size_t timeSize { 10 };
+    const std::size_t spaceSize { 10 };
     const double deltaInit { 0. };
 
     // initial configuration:
@@ -34,17 +34,17 @@ int main()
     // sweep parameters:
     const double beta { 2.3 };
     const double delta { .1 };
-    const std::size_t numberOfSweeps { 10 };
+    const std::size_t numberOfSweeps { 24 };
     const std::size_t iterationsPerSight { 10 };
 
     // to save observables:
     const std::string dataDir { "../data/" };
-    const std::string filename { "wilsonLoopsdoubleTimeSize.txt" };
+    const std::string filename { "wilson2xt.txt" };
     std::vector<std::vector<double>> results;
 
     // for the Wilson loops:
-    std::vector<size_t> M {16,16,16,16,17,17,17,17,18,18,18,18,19,19,19,19}; // time dim
-    std::vector<size_t> N {1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4}; // space dim
+    std::vector<size_t> M {1,2,3,4,5,6,7,8,9}; // time dim
+    std::vector<size_t> N {2,2,2,2,2,2,2,2,2}; // space dim
     results.push_back(std::vector<double>(M.begin(), M.end()));
     results.push_back(std::vector<double>(N.begin(), N.end()));
 
@@ -52,31 +52,22 @@ int main()
     struct timeval tStart, tEnd;
     gettimeofday(&tStart, NULL);
 
-    // just for testing:
-//    std::cout << "performing " << numberOfSweeps << " sweeps." << std::endl;
-//    for (std::size_t i {0}; i < numberOfSweeps; i++)
-//    {
-//        results.push_back(getLoopTraces(U, mu, nu, M, N));
-//        sweep(U, beta, delta, iterationsPerSight, engine);
-//    }
+    std::cout << "warming up..." << std::endl;
+    for (std::size_t i {0}; i < 1000; i++)
+    {
+        sweep(U, beta, delta, iterationsPerSight, engine);
+    }
 
-    // 'serious run' with progress bar
-    std::cout << "performing " << numberOfSweeps << " sweeps: " << std::flush;
-    for (std::size_t i {0}; i < numberOfSweeps; i++)
+    std::cout << "performing " << numberOfSweeps << " sweeps..." << std::flush;
+
+#pragma omp declare reduction (merge : std::vector<std::vector<double>> : omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end()))
+#pragma omp parallel for reduction(merge: results), num_threads(2)
+    for (std::size_t i=0; i < numberOfSweeps; i++)
     {
         results.push_back(getLoopTraces(U, 0, 1, M, N));
         results.push_back(getLoopTraces(U, 0, 2, M, N));
         results.push_back(getLoopTraces(U, 0, 3, M, N));
         sweep(U, beta, delta, iterationsPerSight, engine);
-
-        if (!(i%1000))
-        {
-            std::cout << i / 1000 << std::flush;
-        }
-        else if (!(i%100))
-        {
-            std::cout << '#' << std::flush;
-        }
     }
 
     std::cout << '\n';
@@ -93,8 +84,9 @@ int main()
     std::cout << min << "min, ";
     std::cout << sec + 1.e-6*usec << "s." << std::endl;
 
-    std::cout << "zero if writing successful: ";
-    std::cout << write_2d(results, dataDir + filename, ',') << '\n';
+//    std::cout << "zero if writing successful: ";
+//    std::cout << write_2d(results, dataDir + std::to_string(usec) + filename, ',') << '\n';
+//    // (the usec is there to make the filename unique)
 //
 //    // log the parameters:
 //    std::ofstream log;
