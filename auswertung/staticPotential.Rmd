@@ -1,0 +1,569 @@
+---
+title: "Das statische Potential im Rahmen der SU(2)-Eichsymmetrie"
+author: "Heinrich Campe"
+date: "\\today"
+output:
+    pdf_document:
+        citation_package: biblatex
+        highlight: tango
+        keep_tex: no
+        latex_engine: pdflatex
+        number_sections: yes
+        toc: no
+        toc_depth: 2
+bibliography: references.bib
+link_citation: yes
+lang: de-DE
+header-includes:
+  \usepackage{physics}
+  \usepackage{csquotes}
+  \usepackage{dsfont}
+---
+
+```{r echo=FALSE}
+library(qsimulatR)
+library(knitr)
+library(reticulate)
+library(ggplot2)
+use_python("/usr/local/anaconda3/bin/python")
+knitr::opts_chunk$set(fig.align='center',
+                      fig.width=5,
+                      fig.height=4)
+```
+
+# Das statische Potential zweier Quarks
+
+Um das statische Potential $V(r)$ zu untersuchen, wird verwendet, dass es für den
+Erwartungswert eines Wilson-Loops $\langle W_\mathrm{C} \rangle$ der Maße $t = n_\mathrm{t} a, r$
+wie folgt zusammenhängt:
+\[
+\langle W_\mathrm{C} \rangle = C \exp(-t V(r)).
+\]
+Diese Approximation gilt für $t \gg r$.
+
+## Simulation
+
+Um das statische Potential zu untersuchen, wurden also Simulationen auf einem Gitter
+durchgeführt und Wilson-Loops der Maße $(t, r) \in \{6,7,8,9\} \times \{1,2,3,4\}$
+vermessen. Die anderen Parameter der Simulation waren:
+
+deltaInit = 0,
+delta = 0.1,
+beta = 2.3,
+numberOfSweeps = 100000,
+iterationsPerSight = 10,
+timeSize = 10,
+spaceSize = 5,
+filename: wilsonLoopsFirstRun.txt,
+duration: 4h53min57.5813s.
+
+
+```{python, echo=FALSE}
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.optimize as so
+
+dataDir = "../data/"
+fileName = "wilsonLoopsFirstRun.txt"
+
+data = np.loadtxt(dataDir + fileName, delimiter=',')
+timeLength = data[0,:]
+spaceLength = data[1,:]
+
+measurements = data[1002:,:]
+```
+
+```{python, echo=FALSE}
+loopMean = np.average(measurements, axis=0)
+loopErr  = np.sqrt(np.var(measurements, axis=0) / np.shape(measurements)[0])
+```
+
+## Auswertung
+
+Nach der Equilibrierung fällt bei Betrachtung der Daten zunächst auf, dass die 
+Loops sehr stark fluktuieren. Hier sei exemplarisch ein Teil der Daten dargestellt:
+
+```{python, echo=FALSE}
+plt.plot(measurements[:100,0])
+plt.xlabel("# Sweeps nach Thermalisierung")
+plt.ylabel("$W_\\mathrm{C}$")
+plt.title(f"$t = {timeLength[0]:.0f} a, r = {spaceLength[0]:.0f} a$")
+plt.grid()
+plt.show()
+```
+Für jedes Paar $(t, r)$ wurde nun zunächst der Erwartungswert $\langle W_\mathrm{C} \rangle$
+samt Standardfehler berechnet. Um $a V(r)$ für die verschiedenen Abstände $r$ zu
+berechnen, wurde es zunächst bei festgehaltenem $r$ in Abhängigkeit von $n_\mathrm{t}$
+dargestellt. An die Daten wurde jeweils eine abklingende Exponentialfunktion
+angepasst, um $a V(r)$ zu ermitteln:
+
+```{python, echo=FALSE}
+fig, axs = plt.subplots(2, 2, figsize=(12,8))
+aV = np.zeros(4)
+aVerr = np.zeros(4)
+aV2 = np.zeros(4)
+aV2err = np.zeros(4)
+xFit = np.linspace(6., 9., 100)
+
+for i in range(4):
+    x = timeLength[i::4]
+    y = loopMean[i::4]
+    yErr = loopErr[i::4]
+    
+    # fit:
+    model = lambda nt, C, aV: C*np.exp(-aV*nt)
+    popt, pcov = so.curve_fit(model, x, y, sigma=yErr, absolute_sigma=True)
+    aV[i] = popt[1]
+    aVerr[i] = np.sqrt(pcov[1,1])
+    
+    
+    # alternative option:
+    aV2[i] = np.log(y[-2] / y[-1])
+    aV2err[i] = np.sqrt((yErr[-2]/y[-2])**2 + (yErr[-1]/(y[-1]))**2)
+    
+    axs[i//2, i%2].errorbar(x, y, yErr, linestyle="None", label="Daten")
+    axs[i//2, i%2].plot(xFit, model(xFit, *popt), label="Fit")
+    axs[i//2, i%2].set_xlabel("$n_\\mathrm{t}$")
+    axs[i//2, i%2].set_ylabel(f"exp($-a V({spaceLength[i]:.0f} a)\\, n_t$)")
+    axs[i//2, i%2].set_title(f"$r = {spaceLength[i]:.0f} a$: $aV({spaceLength[i]:.0f} a) = {aV[i]:.2f} \\pm {aVerr[i]:.2f}$")
+    axs[i//2, i%2].grid()
+    axs[i//2, i%2].legend()
+    
+fig.tight_layout()
+plt.show()
+```
+
+Es ist klar ersichtlich, dass die Ergebisse für $n_\mathrm{r} \in \{3, 4\}$ so
+nicht zufriedenstellend sind. Vermutlich liegt es daran, dass die Bedingung
+$t \gg r$ dann nicht mehr hinreichend erfüllt ist. Stellen wir nun das Potential
+$a V(r)$ in Abhängigkeit vom Abstand $r$ dar, ist das Ergebnis entsprechend schlecht:
+
+```{python, echo=FALSE}
+x = spaceLength[:4]
+
+plt.figure(figsize=(4,3))
+plt.errorbar(x, aV, aVerr, linestyle="None")
+plt.xlabel("$r / a$")
+plt.ylabel("$a V(r)$")
+plt.title("$\\beta = 2.3$")
+plt.grid()
+plt.tight_layout()
+plt.show()
+```
+
+In der Literatur wird alternativ vorgeschlagen, für größtmögliches $t$ das
+Potential über
+\[
+aV(r) = \ln \left(\frac{\langle W_\mathrm{C}(t-a,r) \rangle}{\langle W_\mathrm{C}(t,r) \rangle} \right)
+\]
+zu bestimmen. (Dies entspricht effektiv einem Fit durch die jeweils letzten
+beiden Datenpunkte.) Das Ergebnis sieht dann so aus:
+
+```{python, echo=FALSE}
+plt.errorbar(x, aV2, aV2err, linestyle="None")
+plt.xlabel("$r / a$")
+plt.ylabel("$a V(r)$")
+plt.title("$\\beta = 2.3$")
+plt.grid()
+plt.tight_layout()
+plt.show()
+```
+
+Dieses Ergebnis ist nocheinmal deutlich schlechter, da die Unsicherheit
+auf dem zweiten (\enquote{noch ordentlichen}) Wert deutlich größer ist.
+
+
+## Neuer Versuch mit Gittergröße $8^4$
+
+Die oben beschriebenen Ideen werden nochmals mit einem Gitter der Maße
+$8 \times 4$ durchgeführt. Außerdem wurden pro Iteration drei Messungen
+durchgeführt, eine in jede Raumrichtung, also mit Wilson-Loops aufgespannt in
+den Dimensionen $(0,1), (0,2), (0,3)$. Dadurch konnten die Fehler etwas
+verringert werden. Ergebnis:
+
+```{python, echo=FALSE}
+dataDir = "../data/"
+fileName = "wilsonLoops8^4.txt"
+
+data = np.loadtxt(dataDir + fileName, delimiter=',')
+timeLength = data[0,:]
+spaceLength = data[1,:]
+
+measurements = data[3002:,:]
+
+loopMean = np.average(measurements, axis=0)
+loopErr  = np.sqrt(np.var(measurements, axis=0) / np.shape(measurements)[0])
+
+np.shape(measurements)
+```
+
+
+```{python, echo=FALSE}
+fig, axs = plt.subplots(2, 2, figsize=(12,8))
+aV = np.zeros(4)
+aVerr = np.zeros(4)
+aV2 = np.zeros(4)
+aV2err = np.zeros(4)
+xFit = np.linspace(np.min(timeLength), np.max(timeLength), 100)
+
+for i in range(4):
+    x = timeLength[i::4]
+    y = loopMean[i::4]
+    yErr = loopErr[i::4]
+    
+    # fit:
+    model = lambda nt, C, aV: C*np.exp(-aV*nt)
+    popt, pcov = so.curve_fit(model, x, y, sigma=yErr, absolute_sigma=True)
+    aV[i] = popt[1]
+    aVerr[i] = np.sqrt(pcov[1,1])
+    
+    
+    # alternative option:
+    aV2[i] = np.log(y[-2] / y[-1])
+    aV2err[i] = np.sqrt((yErr[-2]/y[-2])**2 + (yErr[-1]/(y[-1]))**2)
+    
+    axs[i//2, i%2].errorbar(x, y, yErr, linestyle="None", label="Daten", fmt='x')
+    axs[i//2, i%2].plot(xFit, model(xFit, *popt), label="Fit")
+    axs[i//2, i%2].set_xlabel("$n_\\mathrm{t}$")
+    axs[i//2, i%2].set_ylabel(f"exp($-a V({spaceLength[i]:.0f} a)\\, n_t$)")
+    axs[i//2, i%2].set_title(f"$r = {spaceLength[i]:.0f} a$: $aV({spaceLength[i]:.0f} a) = {aV[i]:.2f} \\pm {aVerr[i]:.2f}$")
+    axs[i//2, i%2].grid()
+    axs[i//2, i%2].legend()
+    
+fig.tight_layout()
+plt.show()
+```
+Das Ergebnis ist deutlich besser als zuvor. Anhand des letzten Graphen kann man
+erkennen, dass schlechten Ergebnisse zuvor (und jetzt wieder) vermutlich auf die
+endliche Gittergröße zurückzuführen sind. Immer, wenn die räumliche Kantenlänge
+die Hälte des Gitters überschreitet, kommt es zu Problemen. Im ersten Fall 
+($10 \times 5^3$-Gitter) ab $r = 3a$, hier ($8^4$) ab $r = 4a$. Um bis $r = 4a$
+zu messen, ist also mindestens ein Gitter mit $N_\mathrm{s} = 9$ notwendig.
+
+An die Daten kann nun das Modell
+\[
+aV(r) = -\frac{c_1}{r} + c_2 + \sigma \cdot r
+\]
+angepasst werden.
+
+Auch, das Ergebnis noch einen deutlichen zu großen Fehler hat, kann nun erstmals
+die string tension $\sigma$ berechnet werden:
+
+
+```{python, echo=FALSE}
+x = spaceLength[:4]
+aV = aV[:4]
+aVerr = aVerr[:4]
+
+# fit:
+model = lambda r, a, b, sigma: -a/r + b + sigma*r
+popt, pcov = so.curve_fit(model, x, aV, sigma=aVerr, absolute_sigma=True)
+xFit = np.linspace(np.min(x), np.max(x), 100)
+
+
+plt.errorbar(x, aV, aVerr, linestyle="None", fmt="x")
+plt.plot(xFit, model(xFit, *popt))
+plt.xlabel("$r / a$")
+plt.ylabel("$a V(r)$")
+plt.title(f"$\\beta = 2.3: \\sigma = {popt[2]:.4f} \\pm {np.sqrt(pcov[2,2]):.4f}$.")
+plt.grid()
+plt.tight_layout()
+plt.show()
+```
+
+# Noch ein neuer Versuch mit $10^4$
+
+```{python, echo=FALSE}
+spaceSize = 10
+timeSize  = 10
+```
+
+```{python, echo=FALSE}
+dataDir = "../data/"
+fileName = "wilsonLoops8^4.txt"
+
+data = np.loadtxt(dataDir + "137331.000000wilsonLoops10^4.txt", delimiter=',')
+timeLength = data[0,:]
+spaceLength = data[1,:]
+
+measurements = data[3002:,:]
+
+data = np.loadtxt(dataDir + "138232.000000wilsonLoops10^4.txt", delimiter=',')
+measurements = np.append(measurements, data[3002:,:], axis=0)
+
+data = np.loadtxt(dataDir + "-186968.000000wilsonLoops10^4.txt", delimiter=',')
+measurements = np.append(measurements, data[3002:,:], axis=0)
+
+data = np.loadtxt(dataDir + "-528472.000000wilsonLoops10^4.txt", delimiter=',')
+measurements = np.append(measurements, data[3002:,:], axis=0)
+
+
+loopMean = np.average(measurements, axis=0)
+loopErr  = np.sqrt(np.var(measurements, axis=0) / np.shape(measurements)[0])
+```
+
+
+```{python, echo=FALSE}
+fig, axs = plt.subplots(2, 2, figsize=(12,8))
+aV = np.zeros(4)
+aVerr = np.zeros(4)
+aV2 = np.zeros(4)
+aV2err = np.zeros(4)
+xFit = np.linspace(np.min(timeLength), np.max(timeLength), 100)
+
+for i in range(4):
+    x = timeLength[i::4]
+    y = loopMean[i::4]
+    yErr = loopErr[i::4]
+    
+    # fit:
+    model = lambda nt, C, aV: C*np.exp(-aV*nt)
+    popt, pcov = so.curve_fit(model, x, y, sigma=yErr, absolute_sigma=True)
+    aV[i] = popt[1]
+    aVerr[i] = np.sqrt(pcov[1,1])
+    
+    
+    # alternative option:
+    aV2[i] = np.log(y[-2] / y[-1])
+    aV2err[i] = np.sqrt((yErr[-2]/y[-2])**2 + (yErr[-1]/(y[-1]))**2)
+    
+    axs[i//2, i%2].errorbar(x, y, yErr, linestyle="None", label="Daten", fmt='x')
+    axs[i//2, i%2].plot(xFit, model(xFit, *popt), label="Fit")
+    axs[i//2, i%2].set_xlabel("$n_\\mathrm{t}$")
+    axs[i//2, i%2].set_ylabel(f"exp($-a V({spaceLength[i]:.0f} a)\\, n_t$)")
+    axs[i//2, i%2].set_title(f"$r = {spaceLength[i]:.0f} a$: $aV({spaceLength[i]:.0f} a) = {aV[i]:.2f} \\pm {aVerr[i]:.2f}$")
+    axs[i//2, i%2].grid()
+    axs[i//2, i%2].legend()
+    
+fig.tight_layout()
+plt.show()
+```
+
+# noch ein Versuch mit $10^4$ und leicht anderen Wilson Loops
+
+```{python, echo=FALSE}
+dataDir = "../data/"
+fileName = "wilsonLoops8^4.txt"
+
+data = np.loadtxt(dataDir + "-147239.000000wilsonLoops10^4lessTime.txt", delimiter=',')
+timeLength = data[0,:]
+spaceLength = data[1,:]
+
+measurements = data[3002:,:]
+
+data = np.loadtxt(dataDir + "374965.000000wilsonLoops10^4lessTime.txt", delimiter=',')
+measurements = np.append(measurements, data[3002:,:], axis=0)
+
+data = np.loadtxt(dataDir + "-382937.000000wilsonLoops10^4lessTime.txt", delimiter=',')
+measurements = np.append(measurements, data[3002:,:], axis=0)
+
+data = np.loadtxt(dataDir + "-386024.000000wilsonLoops10^4lessTime.txt", delimiter=',')
+measurements = np.append(measurements, data[3002:,:], axis=0)
+
+
+loopMean = np.average(measurements, axis=0)
+loopErr  = np.sqrt(np.var(measurements, axis=0) / np.shape(measurements)[0])
+```
+
+
+```{python, echo=FALSE}
+fig, axs = plt.subplots(2, 2, figsize=(12,8))
+aV = np.zeros(4)
+aVerr = np.zeros(4)
+aV2 = np.zeros(4)
+aV2err = np.zeros(4)
+xFit = np.linspace(np.min(timeLength), np.max(timeLength), 100)
+
+for i in range(4):
+    x = timeLength[i::4]
+    y = loopMean[i::4]
+    yErr = loopErr[i::4]
+    
+    # fit:
+    model = lambda nt, C, aV: C*np.exp(-aV*nt)
+#    if i == 3:
+#        popt, pcov = so.curve_fit(model, x[:2], y[:2], sigma=yErr[:2], absolute_sigma=True)
+#    else:
+#        popt, pcov = so.curve_fit(model, x, y, sigma=yErr, absolute_sigma=True)
+    popt, pcov = so.curve_fit(model, x, y, sigma=yErr, absolute_sigma=True)
+    aV[i] = popt[1]
+    aVerr[i] = np.sqrt(pcov[1,1])
+    
+    
+    # alternative option:
+    aV2[i] = np.log(y[-2] / y[-1])
+    aV2err[i] = np.sqrt((yErr[-2]/y[-2])**2 + (yErr[-1]/(y[-1]))**2)
+    
+    axs[i//2, i%2].errorbar(x, y, yErr, linestyle="None", label="Daten", fmt='x')
+    axs[i//2, i%2].plot(xFit, model(xFit, *popt), label="Fit")
+    axs[i//2, i%2].set_xlabel("$n_\\mathrm{t}$")
+    axs[i//2, i%2].set_ylabel(f"exp($-a V({spaceLength[i]:.0f} a)\\, n_t$)")
+    axs[i//2, i%2].set_title(f"$r = {spaceLength[i]:.0f} a$: $aV({spaceLength[i]:.0f} a) = {aV[i]:.2f} \\pm {aVerr[i]:.2f}$")
+    axs[i//2, i%2].grid()
+    axs[i//2, i%2].legend()
+    
+fig.tight_layout()
+plt.show()
+```
+```{python, echo=FALSE}
+x = spaceLength[:4]
+aV = aV[:4]
+aVerr = aVerr[:4]
+
+# fit:
+model = lambda r, a, b, sigma: -a/r + b + sigma*r
+popt, pcov = so.curve_fit(model, x, aV, sigma=aVerr, absolute_sigma=True)
+xFit = np.linspace(np.min(x), np.max(x), 100)
+
+
+plt.errorbar(x, aV, aVerr, linestyle="None", fmt="x")
+plt.plot(xFit, model(xFit, *popt))
+plt.xlabel("$r / a$")
+plt.ylabel("$a V(r)$")
+plt.title(f"$\\beta = 2.3: \\sigma = {popt[2]:.4f} \\pm {np.sqrt(pcov[2,2]):.4f}$.")
+plt.grid()
+plt.tight_layout()
+plt.show()
+```
+Lässt man beim Fit der Exponentialfunktion für $r = 4a$ die letzten beiden
+(\enquote{schlechten}) Messwerte unberücksichtigt, so findet man:
+
+```{python, echo=FALSE}
+fig, axs = plt.subplots(2, 2, figsize=(12,8))
+aV = np.zeros(4)
+aVerr = np.zeros(4)
+aV2 = np.zeros(4)
+aV2err = np.zeros(4)
+xFit = np.linspace(np.min(timeLength), np.max(timeLength), 100)
+
+for i in range(4):
+    x = timeLength[i::4]
+    y = loopMean[i::4]
+    yErr = loopErr[i::4]
+    
+    # fit:
+    model = lambda nt, C, aV: C*np.exp(-aV*nt)
+    if i == 3:
+        popt, pcov = so.curve_fit(model, x[:2], y[:2], sigma=yErr[:2], absolute_sigma=True)
+    else:
+        popt, pcov = so.curve_fit(model, x, y, sigma=yErr, absolute_sigma=True)
+#    popt, pcov = so.curve_fit(model, x, y, sigma=yErr, absolute_sigma=True)
+    aV[i] = popt[1]
+    aVerr[i] = np.sqrt(pcov[1,1])
+    
+    
+    # alternative option:
+    aV2[i] = np.log(y[-2] / y[-1])
+    aV2err[i] = np.sqrt((yErr[-2]/y[-2])**2 + (yErr[-1]/(y[-1]))**2)
+    
+    axs[i//2, i%2].errorbar(x, y, yErr, linestyle="None", label="Daten", fmt='x')
+    axs[i//2, i%2].plot(xFit, model(xFit, *popt), label="Fit")
+    axs[i//2, i%2].set_xlabel("$n_\\mathrm{t}$")
+    axs[i//2, i%2].set_ylabel(f"exp($-a V({spaceLength[i]:.0f} a)\\, n_t$)")
+    axs[i//2, i%2].set_title(f"$r = {spaceLength[i]:.0f} a$: $aV({spaceLength[i]:.0f} a) = {aV[i]:.2f} \\pm {aVerr[i]:.2f}$")
+    axs[i//2, i%2].grid()
+    axs[i//2, i%2].legend()
+    
+fig.tight_layout()
+plt.show()
+```
+```{python, echo=FALSE}
+x = spaceLength[:4]
+aV = aV[:4]
+aVerr = aVerr[:4]
+
+# fit:
+model = lambda r, a, b, sigma: -a/r + b + sigma*r
+popt, pcov = so.curve_fit(model, x, aV, sigma=aVerr, absolute_sigma=True)
+xFit = np.linspace(np.min(x), np.max(x), 100)
+
+
+plt.errorbar(x, aV, aVerr, linestyle="None", fmt="x")
+plt.plot(xFit, model(xFit, *popt))
+plt.xlabel("$r / a$")
+plt.ylabel("$a V(r)$")
+plt.title(f"$\\beta = 2.3: \\sigma = {popt[2]:.4f} \\pm {np.sqrt(pcov[2,2]):.4f}$.")
+plt.grid()
+plt.tight_layout()
+plt.show()
+```
+# Effektive Masse
+
+Nachfolgend sei die effektive Masse für die verschiedenen $r$ grafisch dargestellt.
+
+```{python, echo=FALSE}
+loopMean = np.reshape(loopMean, (4,4))
+loopErr = np.reshape(loopErr, (4,4))
+timeLength = np.reshape(timeLength, (4,4))
+Meff = -np.log(loopMean[1:,:]/loopMean[:-1,:])
+MeffErr = np.sqrt((loopErr[1:,:]/loopMean[1:,:])**2 + (loopErr[:-1,:]/loopMean[:-1,:]))
+fig, axs = plt.subplots(2, 2, figsize=(12,8))
+
+for i in range(4):
+    axs[i//2, i%2].errorbar(timeLength[:-1,i], Meff[:,i], yerr=MeffErr[:,i], linestyle="None", fmt='x')
+
+    axs[i//2, i%2].set_xlabel("$n_\\mathrm{t}$")
+    axs[i//2, i%2].set_ylabel(f"$M_\\mathrm{{eff}} = -\\ln\\left(\\frac{{\\langle W \\rangle(t+1)}}{{\\langle W \\rangle(t)}}\\right)$")
+    axs[i//2, i%2].set_title(f"$r = {spaceLength[i]:.0f} a$")
+    axs[i//2, i%2].grid()
+    
+plt.tight_layout()
+plt.show()
+```
+
+
+# $20 \times 5^3$
+
+Ergänzend sind schließlich die Daten auf einem Gitter der oben genannten Maße
+dargestellt.
+
+
+```{python, echo=FALSE}
+dataDir = "../data/"
+fileName = "wilsonLoopsdoubleTimeSize.txt"
+
+data = np.loadtxt(dataDir + fileName, delimiter=',')
+timeLength = data[0,:]
+spaceLength = data[1,:]
+
+measurements = data[3002:,:]
+
+loopMean = np.average(measurements, axis=0)
+loopErr  = np.sqrt(np.var(measurements, axis=0) / np.shape(measurements)[0])
+```
+
+```{python, echo=FALSE}
+fig, axs = plt.subplots(2, 2, figsize=(12,8))
+aV = np.zeros(4)
+aVerr = np.zeros(4)
+aV2 = np.zeros(4)
+aV2err = np.zeros(4)
+xFit = np.linspace(6., 9., 100)
+
+for i in range(4):
+    x = timeLength[i::4]
+    y = loopMean[i::4]
+    yErr = loopErr[i::4]
+    
+    # fit:
+#    model = lambda nt, C, aV: C*np.exp(-aV*nt)
+#    popt, pcov = so.curve_fit(model, x, y, sigma=yErr, absolute_sigma=True)
+#    aV[i] = popt[1]
+#    aVerr[i] = np.sqrt(pcov[1,1])
+#    
+#    
+#    # alternative option:
+#    aV2[i] = np.log(y[-2] / y[-1])
+#    aV2err[i] = np.sqrt((yErr[-2]/y[-2])**2 + (yErr[-1]/(y[-1]))**2)
+    
+    axs[i//2, i%2].errorbar(x, y, yErr, linestyle="None", label="Daten")
+#    axs[i//2, i%2].plot(xFit, model(xFit, *popt), label="Fit")
+    axs[i//2, i%2].set_xlabel("$n_\\mathrm{t}$")
+    axs[i//2, i%2].set_ylabel(f"exp($-a V({spaceLength[i]:.0f} a)\\, n_t$)")
+    axs[i//2, i%2].set_title(f"$r = {spaceLength[i]:.0f} a$")#: $aV({spaceLength[i]:.0f} a) = {aV[i]:.2f} \\pm {aVerr[i]:.2f}$")
+    axs[i//2, i%2].grid()
+    axs[i//2, i%2].legend()
+    
+fig.tight_layout()
+plt.show()
+```
