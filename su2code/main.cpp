@@ -60,8 +60,11 @@ int main()
 
     std::cout << "performing " << numberOfSweeps << " sweeps..." << std::flush;
 
+// define merge behaviour for std::vector:
 #pragma omp declare reduction (merge : std::vector<std::vector<double>> : omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end()))
-#pragma omp parallel for reduction(merge: results), num_threads(2)
+// parallelised loop: the results are 2 b merged, the engine has to be
+// shared over all threads to obtain uncorrelated data, use two threads
+#pragma omp parallel for reduction(merge: results), shared(engine), num_threads(2)
     for (std::size_t i=0; i < numberOfSweeps; i++)
     {
         results.push_back(getLoopTraces(U, 0, 1, M, N));
