@@ -34,4 +34,22 @@ std::vector<double> getLoopTraces(const Gaugeconfig& U,
                                  const std::vector<size_t> M,
                                  const std::vector<size_t> N);
 
+/* returns a non planar loop of a given time length t where the
+sides "add up" to a value of sqrt(2)*/
+SU2matrix getSqrt2Loop(const Gaugeconfig& U, const long int t);
+
+
+/* returns a non planar loop of a given time length t where the
+sides "add up" to a value of sqrt(3)*/
+SU2matrix getSqrt3Loop(const Gaugeconfig& U, const long int t);
+
+
+/* returns a non planar loop of a given time length t where the
+sides "add up" to a value of sqrt(6)*/
+SU2matrix getSqrt6Loop(const Gaugeconfig& U, const long int t);
+
+
+/* returns a non planar loop of a given time length t where the
+sides "add up" to a value of sqrt(13)*/
+SU2matrix getSqrt13Loop(const Gaugeconfig& U, const long int t);
 #endif

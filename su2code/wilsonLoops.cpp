@@ -48,3 +48,56 @@ std::vector<double> getLoopTraces(const Gaugeconfig& U,
 
     return traces;
 }
+
+SU2matrix getSqrt2Loop(const Gaugeconfig& U, const long int t)
+{
+    SU2matrix result { unity() };
+    
+    result *= getStraightLine(U, {0,0,0,0}, 0, t);
+    result *= U({t,0,0,0}, 1) * U({t,1,0,0}, 2);
+    result *= getStraightLine(U, {0,1,1,0}, 0, t).dagger();
+    result *= U({0,1,0,0}, 2).dagger() * U({0,0,0,0}, 1).dagger();
+
+    return result;
+}
+
+SU2matrix getSqrt3Loop(const Gaugeconfig& U, const long int t)
+{
+    SU2matrix result { unity() };
+    
+    result *= getStraightLine(U, {0,0,0,0}, 0, t);
+    result *= U({t,0,0,0}, 1) * U({t,1,0,0}, 2) * U({t,1,1,0}, 3);
+    result *= getStraightLine(U, {0,1,1,1}, 0, t).dagger();
+    result *= U({0,1,1,0}, 3).dagger() * U({0,1,0,0}, 2).dagger() *U({0,0,0,0}, 1).dagger();
+
+    return result;
+}
+
+SU2matrix getSqrt6Loop(const Gaugeconfig& U, const long int t)
+{
+    SU2matrix result { unity() };
+    
+    result *= getStraightLine(U, {0,0,0,0}, 0, t);
+    result *= getStraightLine(U, {t,0,0,0}, 1, 2);
+    result *= U({t,2,0,0}, 2) * U({t,2,1,0}, 3);
+    result *= getStraightLine(U, {0,2,1,1}, 0, t).dagger();
+    result *= U({0,2,1,0}, 3).dagger();
+    result *= U({0,2,0,0}, 2).dagger();
+    result *= getStraightLine(U, {0,0,0,0}, 1, 2).dagger();
+
+    return result;
+}
+
+SU2matrix getSqrt13Loop(const Gaugeconfig& U, const long int t)
+{
+    SU2matrix result { unity() };
+    
+    result *= getStraightLine(U, {0,0,0,0}, 0, t);
+    result *= getStraightLine(U, {t,0,0,0}, 1, 2);
+    result *= getStraightLine(U, {t,2,0,0}, 2, 3);
+    result *= getStraightLine(U, {0,2,3,0}, 0, t).dagger();
+    result *= getStraightLine(U, {0,2,0,0}, 2, 3).dagger();
+    result *= getStraightLine(U, {0,0,0,0}, 1, 2).dagger();
+
+    return result;
+}

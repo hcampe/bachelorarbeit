@@ -92,5 +92,19 @@ int main()
 
     std::cout << "should get unity: ";
     std::cout << getPlanarLoop(U, {2,2,2,2}, 0, 3, 1, 2) << std::endl;
+
+    std::cout << "\n////////// testing getSqrt2 /////////\n";
+    U({0,0,0,0}, 0) = iPauliX();
+    U({1,0,0,0}, 0) = iPauliY();
+    U({2,0,0,0}, 1) = iPauliZ();
+    U({2,1,0,0}, 2) = iPauliX();
+    U({1,1,1,0}, 0) = iPauliY().dagger();
+    U({0,1,1,0}, 0) = iPauliZ().dagger();
+    U({0,1,0,0}, 2) = iPauliX().dagger();
+    U({0,0,0,0}, 1) = iPauliY().dagger();
+
+    std::cout << "should get -iZ: ";
+    std::cout << getSqrt2Loop(U, 2) << std::endl;
+
     return 0;
 }

@@ -3,6 +3,7 @@
 #include <ctime> // to log the time of execution
 #include <fstream> // to log things to file
 #include <iostream>
+#include <math.h> // for sqrt
 #include <random> // for the random generator
 #include <sys/time.h> // to measure the computation time
 #include <vector>
@@ -34,17 +35,17 @@ int main()
     // sweep parameters:
     const double beta { 2.3 };
     const double delta { .1 };
-    const std::size_t numberOfSweeps { 24 };
+    const std::size_t numberOfSweeps { 10 };
     const std::size_t iterationsPerSight { 10 };
 
     // to save observables:
     const std::string dataDir { "../data/" };
-    const std::string filename { "wilson2xt.txt" };
+    const std::string filename { "wilsonsqrt.txt" };
     std::vector<std::vector<double>> results;
 
     // for the Wilson loops:
     std::vector<size_t> M {1,2,3,4,5,6,7,8,9}; // time dim
-    std::vector<size_t> N {2,2,2,2,2,2,2,2,2}; // space dim
+    std::vector<double> N {sqrt(2),sqrt(2),sqrt(2),sqrt(2),sqrt(2),sqrt(2),sqrt(2),sqrt(2),sqrt(2)}; // space dim
     results.push_back(std::vector<double>(M.begin(), M.end()));
     results.push_back(std::vector<double>(N.begin(), N.end()));
 
@@ -53,12 +54,14 @@ int main()
     gettimeofday(&tStart, NULL);
 
     std::cout << "warming up..." << std::endl;
-    for (std::size_t i {0}; i < 1000; i++)
+    for (std::size_t i {0}; i < 10; i++)
     {
         sweep(U, beta, delta, iterationsPerSight, engine);
     }
 
     std::cout << "performing " << numberOfSweeps << " sweeps..." << std::flush;
+
+std::vector<double> temp(9,0.);
 
 // define merge behaviour for std::vector:
 #pragma omp declare reduction (merge : std::vector<std::vector<double>> : omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end()))
@@ -67,10 +70,17 @@ int main()
 #pragma omp parallel for reduction(merge: results), shared(engine), num_threads(2)
     for (std::size_t i=0; i < numberOfSweeps; i++)
     {
-        results.push_back(getLoopTraces(U, 0, 1, M, N));
-        results.push_back(getLoopTraces(U, 0, 2, M, N));
-        results.push_back(getLoopTraces(U, 0, 3, M, N));
-        sweep(U, beta, delta, iterationsPerSight, engine);
+        for (std::size_t j=0; j < 9; j++)
+        {
+            temp[j] = trace(getSqrt2Loop(U, j));
+        }
+
+        results.push_back(temp);
+
+        for (size_t j = 0; j < 5; j++)
+        {
+            sweep(U, beta, delta, iterationsPerSight, engine);
+        }
     }
 
     std::cout << '\n';
@@ -87,24 +97,24 @@ int main()
     std::cout << min << "min, ";
     std::cout << sec + 1.e-6*usec << "s." << std::endl;
 
-//    std::cout << "zero if writing successful: ";
-//    std::cout << write_2d(results, dataDir + std::to_string(usec) + filename, ',') << '\n';
-//    // (the usec is there to make the filename unique)
-//
-//    // log the parameters:
-//    std::ofstream log;
-//    log.open(dataDir + "allSimulations.log", std::ios::app); // append mode
-//    log<< "# ";
-//    log<< "deltaInit = " << deltaInit << ", ";
-//    log<< "delta = " << delta << ", ";
-//    log<< "beta = " << beta << ", ";
-//    log<< "numberOfSweeps = " << numberOfSweeps << ", ";
-//    log<< "iterationsPerSight = " << iterationsPerSight << ", ";
-//    log<< "timeSize = " << timeSize << ", ";
-//    log<< "spaceSize = " << spaceSize << ", ";
-//    log<< "filename: " << filename << ", ";
-//    log << "duration: " << hour << 'h' << min << "min" << sec + 1.e-6*usec << "s, ";
-//    const time_t now { std::time(0) };
-//    log << std::ctime(&now);
-//    log.close();
+    std::cout << "zero if writing successful: ";
+    std::cout << write_2d(results, dataDir + std::to_string(usec) + filename, ',') << '\n';
+    // (the usec is there to make the filename unique)
+
+    // log the parameters:
+    std::ofstream log;
+    log.open(dataDir + "allSimulations.log", std::ios::app); // append mode
+    log<< "# ";
+    log<< "deltaInit = " << deltaInit << ", ";
+    log<< "delta = " << delta << ", ";
+    log<< "beta = " << beta << ", ";
+    log<< "numberOfSweeps = " << numberOfSweeps << ", ";
+    log<< "iterationsPerSight = " << iterationsPerSight << ", ";
+    log<< "timeSize = " << timeSize << ", ";
+    log<< "spaceSize = " << spaceSize << ", ";
+    log<< "filename: " << filename << ", ";
+    log << "duration: " << hour << 'h' << min << "min" << sec + 1.e-6*usec << "s, ";
+    const time_t now { std::time(0) };
+    log << std::ctime(&now);
+    log.close();
 }
