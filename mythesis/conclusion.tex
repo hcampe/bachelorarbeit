@@ -1,0 +1,51 @@
+% !TEX root = mythesis.tex
+
+%==============================================================================
+\chapter{Fazit}
+\label{sec:fazit}
+%==============================================================================
+
+Um den Ansatz für die vorgestellte Demonstration von Confinement im Rahmen der
+SU(2)-Eichsymmetrie nachvollziehen zu können, waren zunächst die theoretischen
+Hintergründe notwendig. Hierbei wurde als Erstes der Metropolis-Algorithmus
+vorgestellt, welcher das fundamentale Werkzeug zur numerischen Approximation
+beliebiger Feynman-Pfadintegrale darstellt. Damit wurde als Nächstes exemplarisch
+der harmonische Oszillator vorgestellt, hier konnten Grundzustandsenergie und
+-wellenfunktion erfolgreich mit Simulationen angenähert werden.
+
+Nun folgte die Betrachtung des von Wilson vorgelegten gitterfeldtheoretischen
+Pendants zur Yang-Mills-Wirkung, welches die Dynamik des Eichfelds der
+SU(2)-Eichsymmetrie auf einem Gitter beschreibt. Dies ermöglichte dann die
+Betrachtung dieser Dynamik mit Hilfe des Metropolisalgorithmus sowie der
+Definition der Wilson-Loops als Observable zur Bestimmung des statischen
+Potentials eines Quark-Antiquark-Paares.
+
+Die Beschränkung auf SU(2) hatte den Vorteil, dass sich die Eichtransformationen
+und die gitterfeldtheoretische Formulierung des Eichfeldes in Form von
+Paralleltransporten relativ leicht als unitäre $2 \times 2$-Matrizen mit
+Determinante 1 numerisch darstellen ließen. Die Implementierung erfolgte dann
+mit C++, es wurden Simulationen auf einem Gitter mit $10^4$ Gitterpunkten
+zur Vermessung von Wilson-Loops verschiedener Maße vorgenommen.
+
+Schließlich konnte im Rahmen der Auswertung das statische Potential aus den
+gewonnenen Daten extrahiert werden. Der daran vorgenommene Fit zeigte, dass
+die ausgeführten Messungen noch verbesserungswürdig sind. Trotzdem konnte
+deutlich ebenjener linearer Term im statischen Potential wiedergefunden werden,
+den Wilson (wie eingangs erwähnt) ursprünglich vorhergesagt hatte. So konnte
+numerisch das Auftreten von Confinement im Rahmen der SU(2)-Eichsymmetrie
+nachvollzogen werden.
+
+Leider ist diese Erkenntnis für die physikalische Realität nicht direkt
+relevant, da nicht die SU(3)-Eichsymmetrie betrachtet wurde. Die vorgestellten
+Konzepte ließen sich aber auch dieses Problem übertragen, hierfür wäre vorallem
+eine numerische Repräsentation von Elementen dieser Gruppe notwendig. Alternativ
+bietet sich für eine weitergehende Betrachtung die genauere Untersuchung des
+Phasenübergangs zwischen Confinement und Deconfinement an.
+
+%Leider ist diese Erkenntnis für die physikalische Realität nur insofern
+%bedingt relevant, alsdass die Energieskala, bei der Confinement auftritt weit
+%unter der liegt, ab der die elektroschwache Vereinheitlichung ihren
+%Gültigkeitsbereich hat, welche von SU(2)$\times$U(1) generiert wird.
+%Als nächster Schritt wäre deshalb eine Betrachtung der SU(3)-Eichsymmetrie
+%naheliegend, um tatsächlich Confinement für die starke Wechselwirkung zu
+%demonstrieren.

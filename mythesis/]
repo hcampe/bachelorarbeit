@@ -1,0 +1,428 @@
+% !TEX root = mythesis.tex
+
+%==============================================================================
+\chapter{Theorie}
+\label{sec:theorie}
+%==============================================================================
+
+
+\section{Vom Pfadintegral zum Metropolis-Algorithmus}
+\subsection{Feynman}
+Ausgangspunkt für die verwendete Methode ist der im Rahmen des Feynman'schen
+Pfadintegralformalismus eingeführte Propagator \cite{freedmanCreutz}
+\begin{equation} \label{eq:propagator}
+    \bra{f} e^{-H t} \ket{i} = \int \mathscr{D}[x] e^{-S[x]} =: Z,
+\end{equation}
+welcher den Übergang eines physikalischen Systems charakterisiert durch den
+Hamiltonian $H$ resp. der Wirkung $S$  beschreibt. $x(t)$ sei hier eine
+Funktion, welche die Trajektorie des Systems vom Anfangszustand $\ket{i}$ in
+den Endzustand $\ket{f}$ charakterisiert, $\int \mathscr{D}[x]$ bezeichne die
+Integration über alle Trajektorien. Die berechnete Amplitude setzt sich also
+aus allen möglichen Pfade zusammen, die das System wählen kann, jeder dieser
+Pfade $x(t)$ wird mit dem exponentiellen Faktor $e^{-S[x]}$ gewichtet.
+
+In der hier notierten Form wurde
+$\hbar = 1$ angenommen sowie die Wick-Rotation zu imaginärer Zeit
+\[
+    t \mapsto it
+\]
+verwendet. Letzteres hat den Vorteil, dass anstelle von (womöglich stark
+oszillierenden) Phasen nur exponentielle Faktoren betrachtet werden müssen, was
+insb. die Berechnungen mit numerischen Methoden vereinfacht. \cite{freedmanCreutz}
+
+Der Erwartungswert einer Observablen $O$ ist im Rahmen dieses Formalismus'
+wie folgt definiert \cite{freedmanCreutz}:
+\[
+    \langle O \rangle = \frac{1}{Z} \int \mathscr{D}[x] O[x] e^{-S[x]}.
+\]
+Solche Observablen sollen schlussendlich gemessen werden. Es fällt auf, dass
+diese Definition der eines Erwartungswertes von $O[x]$ bzgl. der Verteilung
+\begin{equation} \label{eq:feynmanDensity}
+    P^\text{Feyn} \mathscr{D}[x] =  \frac{1}{Z} e^{-S[x]} \mathscr{D}[x]
+\end{equation}
+entspricht. Um diesen Erwartungswert anzunähern, sollen Trajektorien
+$\{x^\alpha\}$ aus dieser Verteilung gezogen werden. Dann kann
+$\langle O \rangle$ über das arithmetische Mittel zu
+\[
+    \overline{O} = \sum_\alpha O[x^\alpha]
+\]
+abgeschätzt werden. $\langle O \rangle$ kann durch Erhöhung der Stichprobe
+beliebig gut durch $\overline{O}$ approximiert werden.
+
+Dieser Ansatz vereinfacht die gestellte Aufgabe enorm: Anstelle der Berechnung
+eines unendlichdimensionalen Integrals zum Finden von $\langle O \rangle$
+müssen lediglich Trajektorien $\{x^\alpha\}$ aus der Verteilung gezogen werden.
+Das soll das nächste Etappenziel sein.
+
+\subsection{Markov}\footnote{RUSSISCH!!!}
+Eine Möglichkeit, Elemente aus einer bestimmten Verteilung zu generieren
+bietet ein iterativer stochastischer Prozess, der als Markov-Kette bezeichnet
+wird. Die Betrachtung hier ist an die von Freedman und Creutz \cite{freedmanCreutz}
+angelehnt.
+
+Sei zunächst $x$ eine kontinuierliche Größe, welche den Zustand eines
+stochastischen Systems beschreibt. $W(x,x')$ ist dann eine Funktion,
+welche die Übergangswahrscheinlichkeit des Systems vom Zustand $x$ in den Zustand
+$x'$ wiedergibt. Da es sich um eine Wahrscheinlichkeitsdichte handelt, muss
+\begin{equation} \label{eq:transitionProb}
+    W(x,x') \geq 0\, \forall x, x'
+    \text{ und }
+    \int \dd{x'} W(x,x') = 1\, \forall x
+\end{equation}
+gelten. Die zweite Gleichung entspricht der Aussage, dass das System immer in
+irgendeinen Zustand übergehen muss. (Und natürlich sind Wahrscheinlichkeiten
+immer positiv.)
+
+Ein $n$-schrittiger Übergansprozess von $x$ nach $x'$ über $n-1$
+Zwischenzustände lässt sich dann durch folgendes Integral beschreiben:
+\begin{align*}
+    W^{(n)}(x,x') &= \int \dd{x_1} \dd{x_2} \dots \dd{x_{n-1}}
+        W(x,x_1) W(x_1, x_2) \dots W(x_{n-1},x') \\
+    &= \int \dd{\tilde{x}} W^{(n-1)}(x, \tilde{x}) W(\tilde{x}, x').
+\end{align*}
+Nun lässt sich zeigen, dass für große $n$ ein Gleichgewichtszustand erreicht
+wird, der nicht mehr vom Anfangszustand abhängt \cite{freedmanCreutz}:
+\[
+\lim_{n \rightarrow \infty} W^{(n)}(x,x') = P(x').
+\]
+$P(x')$ ist dann ein Eigenvektor von $W(x,x')$, wie sich durch iteratives
+Einsetzen der Definition leicht nachvollziehen lässt:
+\[
+P(x') 
+= \lim_{n+1 \rightarrow \infty} P(x) W^{(n+1)}(x,x')
+= \lim_{n \rightarrow \infty} \int \dd{x_n} W^{(n)}(x, x_n) W(x_n,x')
+= \int \dd{\tilde{x}} P(\tilde{x}) W(\tilde{x},x').
+\]
+Daher auch die Bezeichnung als Gleichgewichtszustand: Haben wir ein Verfahren,
+dass $x'$ aus $x$ erzeugt, wobei die für $W(x,x')$ geforderten Eigenschaften
+erfüllt werden, und ist die Kofiguration $x$
+erst einmal in einem Zustand, der durch $P(x)$ beschrieben wird, gilt dies auch
+für alle durch weitere Iterationen erzeugten Zustände $x'$. Indes muss natürlich
+nicht $x' = x$ gelten, lediglich $P(x') = P(x)$ ist garantiert.
+
+Da $W(x,x')$ eine
+Wahrscheinlichkeitsdichte ist, gilt dies auch für $P(x')$. Die Idee ist
+nun, $W(x,x')$ so zu gestalten, dass wir nach vielen Iterationen von $W(x,x')$
+die gewünschte Verteilung $P^\text{Feyn}$ \eqref{eq:feynmanDensity} erhalten.
+Hierfür wollen wir zunächst die Eigenschaft der sog. \emph{detailed balance}
+einführen. Sie besagt \cite{freedmanCreutz}:
+\begin{equation} \label{eq:detailedBalance}
+\frac{W(x,x')}{W(x',x)} = \frac{P(x')}{P(x)} 
+\end{equation}
+Hierdurch wird die o.\,g. Eigenwertgleichung impliziert:
+\[
+\int \dd{x} W(x,x') = \int \dd{x} P(x) \frac{P(x')}{P(x)} W(x',x)
+= P(x') \underbrace{\int \dd{x} W(x',x)}_{= 1 \, \eqref{eq:transitionProb}}.
+\]
+Setzen wir in die detailed balance Bedingung \eqref{eq:detailedBalance} die
+Definition der gewünschten Wahrscheinlichkeitsdichte \eqref{eq:feynmanDensity}
+ein, so finden wir
+\[
+\frac{W(x,x')}{W(x',x)} = \frac{e^{-S[x']}}{e^{-S[x]}}
+= e^{-\Delta S[x',x]}
+\]
+als Anforderung an das Verfahren zur Erzeugung von $x'$ aus $x$.
+
+\subsection{Metropolis} \label{sec:metropolis}
+So ein Verfahren ist der Metropolis-Algorithmus. Seine grundsätzliche Funktionsweise
+ist in Listing \ref{alg:metropolis} nachzulesen.
+
+\begin{algorithm}
+    \caption{Metropolisalgorithmus} \label{alg:metropolis}
+\begin{algorithmic}[0]
+    \REQUIRE $x$
+    \FOR{$x_i \in x$}
+        \STATE generate random $x'_i$
+        \STATE compute
+        $\Delta S(x'_i, x_i, x) = S[\{\cdots, x_{i-1}, x'_i, x_{i+1}, \cdots\}]\
+        - S[\{\cdots, x_{i-1}, x_i, x_{i+1}, \cdots\}]$
+        \IF{$\Delta S[x'_i, x_i, x] < 0$}
+            \STATE set $x_i = x'_i$
+        \ELSE
+            \STATE draw random $r \in U(0,1)$
+            \IF{$r < e^{-\Delta S[x'_i, x]}$}
+                \STATE set $x_i = x'_i$
+            \ENDIF
+        \ENDIF
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+Alle Elemente von $x_i \in x$ werden also nacheinander zunächst zufällig
+verändert, dann wird jeweils berechnet, wie sich dadurch die Wirkung verändert.
+Wird sie kleiner, setzt man $x_i$ auf den neuen Wert. Für den Fall
+$\Delta S > 0$, kann $x_i$ trotzdem aktualisiert werden, dann allerdings mit
+der Wahrscheinlichkeit $P = e^{-\Delta S}$. (Dies wird in der Praxis durch die
+zufällige Ziehung von $r$ aus $(0,1)$ und den Vergleich mit $P$ bewerkstelligt.)
+Zusammen gilt also für einen einzelnen Schritt:
+\[
+W(x,x') =
+\begin{cases}
+    1 & \text{wenn } \Delta S < 0, \\
+    e^{-\Delta S} & \text{sonst}.
+\end{cases}
+\]
+Hiermit wird auch klar, dass der Algorithmus die detailed balance-Bedingung
+\eqref{eq:detailedBalance} erfüllt: Sei oBdA $S[x'] < S[x]$. Dann ist
+\[
+W(x,x') = 1, W(x',x) = e^{-\left( S[x] - S[x'] \right)}
+\rightarrow \frac{W(x,x')}{W(x',x)} = \frac{e^{-S[x']}}{e^{-S[x]}}.
+\]
+In der Praxis ist der Algorithmus noch in dreierlei Hinsicht verändert: Der
+wichtigste Aspekt ist der, dass die \emph{Veränderung} der Wirkung $\Delta S$ durch
+die Modifikation eines einzelnen Gitterpunkts $x_i$ oft nur von $x_i, x'_i$ und
+den direkten \enquote{Nachbarn} (je nach Topologie des Problems) von $x_i$
+abhängt. Dies vereinfacht die auszuführende Rechnung je Gitterpunkt enorm.
+Im Gegensatz zum notierten Algorithmus werden die neuen Vorschläge $x'_i$
+außerdem \enquote{nah} an den ursprünglichen Positionen $x_i$ gewählt (die Metrik hängt
+vom betrachteten Problem ab). Dadurch wird zwar die potentielle Veränderung der
+Trajektorie durch eine Iteration kleiner, allerdings erhöht sich so die
+Wahrscheinlichkeit, dass der neue Vorschlag $x_i$ vom Algorithmus
+\enquote{angenommen} wird. Schließlich werden für jedes $x_i$ mehrere
+Iterationen des Algorithmus ausgeführt, bevor zum nächsten Gitterpunkt übergegangen
+wird. Hierdurch wird $x_i$ zunächst mit seinen \enquote{Nachbarn} optimal
+eingestellt, was auch die allgemeine Konvergenz zum Equilibrium beschleunigt.
+
+\section*{Intermezzo 1: Der harmonische Oszillator als Beispiel}
+
+\section*{Intermezzo 2: Warum \emph{Gitter}feldtheorie?}
+
+\section{Das SU(2)-Eichfeld auf einem Gitter}
+\subsection{Yang-Mills}
+Hauptbetrachtungsobjekt dieser Arbeit soll das Eichfeld $A_\mu$ der
+SU(2)-Eichsymmetrie sein. Der Lagrangian der betrachteten Theorie enthält 
+Terme
+\[
+    \mathscr{L}_\text{F}(x) = \overline{\psi}(x)(i \gamma^\mu \partial_\mu - m) \psi(x),
+\]
+bei $\psi$ handelt es sich also um ein fermionisches Feld.
+Die betrachtete Eichtransformation wirkt auf die Felder dann wie folgt
+\cite{gattringerLang}:
+\[
+    \psi(x) \mapsto \Omega(x) \psi(x), \; \Omega(x) \in \mathrm{SU}(2).
+\]
+Damit die Theorie eichinvariant wird, soll die Ableitung der Felder genauso
+transformieren wie die Felder selbst und dafür muss $\partial_\mu$
+durch eine kovariante Ableitung $D_\mu = \partial_\mu + i A_\mu$ ersetzt werden.
+Setzen wir dann als Transformationsverhalten für das Eichfeld
+\[
+    A_\mu(x) \mapsto \Omega(x) A_\mu(x) \Omega(x)^\dag
+    + i \left( \partial_\mu \Omega(x) \right) \Omega(x)^\dag
+\]
+an \cite{gattringerLang}, so finden wir unter Verwendung von $\Omega^\dag \Omega = 1$
+\begin{align*}
+    D_\mu(x) \psi(x) \mapsto
+    &\left( \partial_\mu + i \Omega(x) A_\mu \Omega(x)^\dag
+    - \left( \partial_\mu \Omega(x) \right) \Omega(x)^\dag \right)
+    \Omega(x) \psi(x)\\
+    = &\left( \partial_\mu \Omega(x) \right) \psi
+    + \Omega(x) \partial_\mu \psi(x) + i \Omega(x) A_\mu(x) \psi(x)
+    - \left( \partial_\mu \Omega(x) \right) \\
+    = &\Omega(x) D_\mu(x) \psi(x).
+\end{align*}
+So kann also die Eichinvarianz der Theorie erreicht werden.
+
+Die Dynamik des Eichfelds wird typischerweise durch die Yang-Mills-Wirkung
+\begin{equation} \label{eq:yang-millsAction}
+S[A] = \frac{1}{2 g^2} \int \dd^4{x} \mathrm{tr}\,
+\left[ F_{\mu \nu}(x) F^{\mu \nu}(x) \right]
+\end{equation}
+beschrieben. \cite{gattringerLang} Hierbei ist
+\[
+F_{\mu \nu}(x) = -i [D_\mu(x), D_\nu(x)]
+= \partial_\mu A_\nu(x) - \partial_\nu A_\mu(x) + i [A_\mu(x), A_\nu(x)]
+\]
+der Feldstärketensor. Zunächst soll nun eine Version dieser Wirkung auf einem
+Gitter definiert werden.
+
+\subsection{Wilson}
+Um die Integration über alle Dimensionen der Raumzeit zu implementieren,
+brauchen wir ein vierdimensionales Gitter. Dieses Gitter habe in Zeitrichtung
+eine Ausdehnung von $L_\mathrm{t}$ Gitterpunkten und in die drei Raumrichtungen
+jeweils eine Ausdehnung von $L_\mathrm{s}$ Gitterpunkten. Wir verwenden
+periodische Randbedingungen: man kann das Gitter nicht \enquote{verlassen},
+sondern läuft immer auf der gegenüberliegenden Seite wieder hinein. Befindet
+man sich z.\,B. bei $(L_\mathrm{t}-1,0,0,0)$ und geht einen Schritt in
+Zeitrichtung, so befindet man sich danach wieder bei $(0,0,0,0)$. Das Gitter
+ist gewissermaßen in jeder Dimension an den Enden zusammengeklebt:
+\[
+\Lambda = \{0, 1, \dots, L_\mathrm{t}-1\}/(0 \sim L_\mathrm{t}-1)
+\times \left( \{0, 1, \dots, L_\mathrm{s}-1 \} / (0 \sim L_\mathrm{s}-1) \right)^3,
+\]
+es handelt sich also um einen vierdimensionalen, diskretisierten Hypertorus.
+Der Abstand der Gitterpunkte sei $a$, als Basis für das Gitter wählen wir die
+Vektoren $a_\mu$, die von einem Gitterpunkt auf den nächsten in Richtung $\mu$
+zeigen. Sie haben folglich die Länge $a$ und die Basis ist demnach keine
+Ortho\emph{normal}basis.
+
+Nun wollen wir unsere Felder auf dem Gitter definieren. Die kanonische
+Entscheidung wäre, ihren Definitionsbereich auf das Gitter zu beschränken.
+Leider zeigt sich bereits beim fermionischen Feld, dass es so einfach nicht
+ist. Die diskretisierte Ableitung ließe sich z.\,B. so umsetzen:
+\[
+\partial_\mu \psi(x) = \frac{\psi(x + a_\mu) - \psi(x)}{a}.
+\]
+Betrachten wir dann das Verhalten so einer Ableitung unter der Eichtransformation,
+so finden wir
+\[
+\partial_\mu(x) \psi(x) \mapsto
+\frac{\Omega(x + a_\mu) \psi(x + a_\mu) - \Omega(x) \psi(x)}{a}.
+\]
+Dieses Ergebnis ist insofern problemtatisch, alsdass wir durch die oben
+so geschickt eingeführte kovariante Ableitung $D_\mu$ nicht das gewünschte
+Transformationsverhalten erreichen können. Das liegt primär daran, dass hier
+$\Omega$ an zwei verschiedenen Orten, $x$ und $x + a_\mu$, verwendet wird. Die
+Lösung findet sich in sog. Paralleltransporten $U_\mu(x) \in \mathrm{SU}(2)$,
+deren Transformationsverhalten durch
+\[
+    U_\mu(x) \mapsto \Omega(x) U_\mu(x) \Omega(x + a_\mu)^\dag
+\]
+definiert ist. \cite{gattringerLang} Verwenden wir dann die folgende neue kovriante
+Ableitung
+\[
+    \tilde{D}_\mu \psi(x) =
+    \frac{U_\mu(x) \psi(x + a_\mu) - \psi(x)}{a},
+\]
+so erhalten wir wieder das gewünschte Transformationsverhalten
+\begin{align*}
+    \tilde{D}_\mu \psi(x) \mapsto
+    &\frac{\Omega (x) U_\mu(x)
+    \overbrace{\Omega(x + a_\mu)^\dag \Omega(x + a_\mu)}^{= \mathds{1}}
+    \psi(x + a_\mu) - \Omega(x) \psi(x)}{a} \\
+    = & \Omega(x) \tilde{D}_\mu \psi(x).
+\end{align*}
+Die Paralleltransporte verdienen noch etwas Aufmerksamkeit: $U_\mu(x)$ kann als
+\enquote{Zeiger} von $x$ nach $x + a_\mu$ interpretiert werden. Umgekehrt zeigt
+$U_\mu(x)^\dag$ von $x + a_\mu$ auf $x$. \cite{urbachCPscript} Um die Verbindung
+zum Eichfeld $A_\mu(x)$ herzustellen, reicht ein Blick auf ihre genaue
+mathematische Definition \cite{gattringerLang}
+\[
+    U_\mu(x) = P \exp(i \int_\gamma \dd{s} A_\mu),
+\]
+hier ist $\gamma$ ein Pfad, der $x$ mit $x + a_\mu$ verbindet. Wenn man die
+direkte Verbindungslinie für $\gamma$ annimmt und das Integral nun in zu erster
+Ordnung in $a$ auf dem Gitter ausführt, so findet man \cite{gattringerLang}
+\begin{equation} \label{eq:parallelTransportexpA}
+    U_\mu(x) = \exp(i a A_\mu(x)).
+\end{equation}
+Dieser Zusammenhang wird im Folgenden nüzlich sein bei der Betrachtung der
+Wilson-Wirkung, welche das Verhalten des Eichfelds auf einem Gitter beschreibt
+\cite{urbachCPscript}:
+\begin{equation} \label{eq:wilsonAction}
+    S_\text{Wilson} = \frac{\beta}{2} \sum_{x \in \Lambda} \sum_{\mu < \nu}
+    \text{Re} \text{tr} \left[ 1 - U_{\mu \nu}(x) \right].
+\end{equation}
+Üblicherweise wird in dieser Formulierung die inverse Kopplung
+$\beta = \frac{2 N_\text{c}}{g^2} = \frac{4}{g^2}$ verwendet. Was ist hier
+$U_{\mu \nu}$? Es handelt sich um den kleinstmöglichen geschlossenen Ring von
+Paralleltransporten \cite{urbachCPscript}
+\[
+    U_{\mu \nu}(x) = U_\mu(x) U_\nu(x + a_\mu) U_\mu(x + a_\nu)^\dag U_\nu(x)^\dag,
+\]
+der auch \emph{Plaquette} genannt wird. Man sieht leicht, dass die Spur dieser
+Plaquette (wie die aller geschlossenen Ringe von Paralleltransporten) eichinvariant
+ist, was auch die
+formulierte Wilson-Wirkung eichinvariant macht. Nun wollen wir zeigen, dass sie
+für kleine Gitterabstände $a$ wieder in die Yang-Mills-Wirkung
+\eqref{eq:yang-millsAction} übergeht.
+
+Dazu betrachte zunächst die Plaquette im Rahmen des oben gefundenen exponentiellen
+Ausdrucks für die Paralleltransporte \ref{eq:parallelTransportexpA}:
+\begin{align*}
+    U_{\mu \nu}(x) =
+    &\exp(i a A_\mu(x)) \exp(i a A_\nu(x + a_\mu))
+    \exp(-i a A_\mu(x + a_\nu)) \exp(-i a A_\nu(x)) \\
+    = &\exp \left\{ i a \left(A_\mu(x)
+    + A_\nu(x + a_\mu) - A_\mu(x + a_\nu)
+    - A_\nu(x) \right) \right. \\
+    &+ \frac{i a^2}{2} \left(-[A_\mu(x), A_\nu(x + a_\mu)]
+    + [A_\mu(x), A_\mu(x + a_\nu)] \right. \\
+    &+ [A_\mu(x), A_\nu(x)] + [A_\nu(x + a_\mu), A_\mu(x + a_\nu)] \\
+    &+ \left. \left. [A_\nu(x + a_\mu), A_\nu(x)] \right) + \mathcal{O}(a^3) \right\} \\
+    = &\exp{i a \cdot 0 + i a^2 \left(\partial_\mu A_\nu(x)
+    -\partial_\nu A_\mu(x) + i [A_\mu(x), A_\nu(x)] \right) + \mathcal{O}(a^3)} \\
+    = &\exp(\frac{i a^2}{2} F_{\mu \nu}(x) + \mathcal{O}(a^3)).
+\end{align*}
+Hierbei wurde eine Version der Baker-Camphell-Hausdorff-Regel \cite{gattringerLang}
+\[
+    e^A e^B = e^{A + B + \frac{1}{2} [A, B] + \cdots}
+\]
+verwendet. Im zweiten Schritt wurden die Felder um $x$ entwickelt, also z.\,B.
+\[
+    A_\mu(x + a_\nu) = A_\mu(x) + a \partial_\nu A_\mu(x) + \mathcal{O}(a^2).
+\]
+Setzen wir das gefundene Ergebnis in die Wilson-Wirkung
+\eqref{eq:wilsonAction} ein, so erhalten wir unter Berücksichtigung der
+Antisymmetrie des Feldstärketensors \cite{gattringerLang}
+\begin{align*}
+    S_\text{Wilson} &= \frac{\beta}{2} \sum_{x \in \Lambda} \sum_{\mu < \nu}
+    \text{Re} \; \text{tr} \left[\mathds{1} - \mathds{1}
+    + \frac{1}{2} (a^2 F_{\mu \nu}(x))^2
+    + \mathcal{O}(a^5) \right] \\
+    &= \frac{a^4}{2 g^2} \sum_{x \in \Lambda} \text{tr} \left[ \sum_{\mu, \nu}
+    (F_{\mu \nu}(x))^2 \right] + \mathcal{O}(a^5).
+\end{align*}
+Die Wilson-Wirkung bietet also eine ordentliche Annäherung an die im Kontinuum
+formulierte Yang-Mills-Wirkung.
+
+\section{Wilson und Metropolis}
+Um den Metropolisalgorithmus auf dem Gitter umsetzen zu können, fehlt uns noch eine
+effiziente Methode, um $\Delta S$ zu berechnen. Es ist einleuchtend, dass die durch
+die Veränderung eines einzelnen Paralleltransports $U_\mu(x)$ modifizierten Plaquettes
+ebenjene sind, an denen $U_\mu(x)$ als \enquote{Kante} beteiligt ist. Je Ebene
+$(\mu, \nu)$ in der Raumzeit gibt es hiervon zwei -- \enquote{oberhalb} und
+\enquote{unterhalb} von $U_\mu(x)$. Wir finden also
+\begin{align*}
+    \Delta S &= -\frac{\beta}{2} \sum_{\nu \neq \mu} \mathrm{tr} \left[ \right.
+        U'_{\mu \nu}(x) - U_{\mu \nu}(x)
+        + U'_{\mu \nu}(x - a_\nu) - U_{\mu \nu}(x - a_\nu) \left. \right] \\
+    &= -\frac{\beta}{2} \sum_{\nu \neq \mu} \mathrm{tr} \left[ \right.
+        U'_{\mu \nu}(x) - U_{\mu \nu}(x)
+        + (U'_{\mu \nu}(x - a_\nu) - U_{\mu \nu}(x - a_\nu))^\dag \left. \right] \\
+    &= -\frac{\beta}{2} \sum_{\nu \neq \mu} \mathrm{tr} \left[ \right.
+       (U'_\mu(x) - U_\mu(x)) U_\nu(x + a_\mu) U_\mu(x + a_\nu)^\dag U_\nu(x)^\dag \\
+    & \qquad \qquad + U_\nu(x - a_\nu) (U'_\mu(x) - U_\mu(x))
+    U_\nu(x + a_\mu - a_\nu)^\dag U_\mu(x - a_\nu)^\dag \left. \right] \\
+    &= -\frac{\beta}{2} (U'_\mu(x) - U_\mu(x)) \sum_{\nu \neq \mu}
+    \text{tr} \left[ \right. U_\nu(x + a_\mu) U_\mu(x + a_\nu)^\dag U_\nu(x)^\dag \\
+    & \qquad \qquad \qquad  \qquad \underbrace{\qquad+ U_\nu(x + a_\mu - a_\nu)^\dag
+    U_\mu(x - a_\nu)^\dag
+    U_\nu(x - a_\nu) \left. \right]}_{=: K_{\mu \nu}(x)}.
+\end{align*}
+Hier wurde im ersten Schritt
+$\text{tr} \, U = \text{tr} \, U^\dag \; \forall U \in \text{SU}(2)$
+und im zweiten Schritt die Zyklizität der Spur verwendet. Die Größe $K_{\mu \nu}(x)$
+wird \emph{staple} genannt. Wie zuvor angedeutet, muss also für die Berechnung von
+$\Delta S [U'_\mu(x), U_\mu(x)]$ nicht das gesamte Gitter berücksichtig werden, es
+genügt die Betrachtung der $3 \cdot 6 = 18$ umliegenden Paralleltransporten.
+
+
+\section{Das statische Potential und Wilson-Loops}
+Eine wichtige Observable auf dem Gitter sind sog. Wilson-Loops, die geschlossene
+Ringe von Paralleltransporten darstellen. Im einfachsten Fall kann man sie sich
+als Rechteck vorstellen:
+\[
+    W(x, \mu, \nu, m, n) = \prod_{i=0}^{m-1} U_\mu(x + i a_\mu)
+    \cdot \prod_{i=0}^{n-1} U_\nu(x + m a_\mu + i a_\nu)
+    \cdot \left( \prod_{i=0}^{m-1} U_\mu(x + i a_\mu + n a_\nu) \right)^\dag
+    \cdot \left( \prod_{i=0}^{n-1} U_\mu(x + i a_\nu) \right)^\dag.
+\]
+Im Folgenden soll ein Beweis dafür skizziert werden, dass sich aus dem
+Erwartungswert $\langle W(0, i, l_\text{t}, l_\text{s}) \rangle$ das Potential
+zweier schwerer, immobiler (\enquote{statischer}) Quarks mit Abstand $l_\text{s} a$
+extrahieren lässt.
+
+Angenommen, $\ket{Q}$ sei ein Zustand eines schweren Quark-Antiquark-Paars, die beide
+aufgrund ihrer großen Masse unbeweglich sind. Die Propagation des Zustandes lässt
+sich dann durch den Propagator \eqref{eq:propagator} beschreiben. Nun fügen wir
+einen Einheitsoperator, ausgedrückt durch die Energieeigenzustände,
+$\mathds{1} = \sum_n \ket{n} \bra{n}$ ein und finden:
+\[
+    \bra{Q} e^{-H t} \ket{Q}
+    = \sum_n \bra{Q} e^{-H t} \ket{n} \braket{n}{Q}
+    = \sum_n e^{-E_n t} \braket{Q}{n} \braket{n}{Q}
+    \xrightarrow{t \rightarrow \infty} e^{-E_0 t} |\braket{0}{Q}|^2
+\]
+Das bedeutet: für große Zeiten $t$ lässt sich die Energie des niedrigsten mit $\ket{Q}$
+überlappenden Zustands aus dem Propagator extrahieren. Dies wollen wir uns zunutze
+machen: 

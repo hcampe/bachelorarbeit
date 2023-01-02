@@ -1,0 +1,19 @@
+\frametitle{Exemplarische \texttt {main}-Funktion}
+\begin{lstlisting}[language=C++,basicstyle=\small]
+int main() {
+  ...
+  for (std::size_t i=0; i < 1000; i++) {
+    sweep(U, beta, delta, iterationsPerSight, engine);
+  }
+  ...
+  for (std::size_t i=0; i < 20000; i++) {
+    results.push_back(getSqrt2Loop(U, 2));
+
+    for (size_t j = 0; j < 5; j++) {
+        sweep(U, beta, delta, iterationsPerSight, engine);
+      }
+  }
+  ...
+  return 0;
+}
+	\end{lstlisting}

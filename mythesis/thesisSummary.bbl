@@ -1,0 +1,173 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{thesis}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=11efd5b8b8de8f041f23e9b8104e9dd4}{%
+           family={Campe},
+           familyi={C\bibinitperiod},
+           given={H},
+           giveni={H\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Universität Bonn}%
+      }
+      \strng{namehash}{11efd5b8b8de8f041f23e9b8104e9dd4}
+      \strng{fullhash}{11efd5b8b8de8f041f23e9b8104e9dd4}
+      \strng{bibnamehash}{11efd5b8b8de8f041f23e9b8104e9dd4}
+      \strng{authorbibnamehash}{11efd5b8b8de8f041f23e9b8104e9dd4}
+      \strng{authornamehash}{11efd5b8b8de8f041f23e9b8104e9dd4}
+      \strng{authorfullhash}{11efd5b8b8de8f041f23e9b8104e9dd4}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Untersuchung von Quantensystemen mit Hilfe von gitterfeldtheoretischen Methoden}
+      \field{year}{2021}
+    \endentry
+    \entry{freedmanCreutz}{article}{}
+      \name{author}{2}{}{%
+        {{hash=552368d47201be8e859cf5d89a641d01}{%
+           family={Creutz},
+           familyi={C\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=c02c22a3304dd754faf1a295c795a560}{%
+           family={Freedman},
+           familyi={F\bibinitperiod},
+           given={B},
+           giveni={B\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{fullhash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{bibnamehash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{authorbibnamehash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{authornamehash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{authorfullhash}{db7215a7df826ac26c3cce2b3795d06f}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Annals of Physics}
+      \field{number}{2}
+      \field{title}{A statistical approach to quantum mechanics}
+      \field{volume}{132}
+      \field{year}{1981}
+      \field{pages}{427\bibrangedash 462}
+      \range{pages}{36}
+    \endentry
+    \entry{gattringerLang}{book}{}
+      \name{author}{2}{}{%
+        {{hash=ab3acce952ef8402d2dbc5455a71d4be}{%
+           family={Gattringer},
+           familyi={G\bibinitperiod},
+           given={Christof},
+           giveni={C\bibinitperiod}}}%
+        {{hash=797b250c63dc835bc1409939d00b872c}{%
+           family={Lang},
+           familyi={L\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Science \& Business Media}%
+      }
+      \strng{namehash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{fullhash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{bibnamehash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{authorbibnamehash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{authornamehash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{authorfullhash}{6ed23f72aca906124fc1f6dfdc112035}
+      \field{sortinit}{G}
+      \field{sortinithash}{5e8d2bf9d38de41b1528bd307546008f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{chapter}{2, 3}
+      \field{series}{Lecture Notes in Physics}
+      \field{title}{Quantum chromodynamics on the lattice: an introductory presentation}
+      \field{volume}{788}
+      \field{year}{2009}
+    \endentry
+    \entry{urbachCPscript}{misc}{}
+      \name{author}{2}{}{%
+        {{hash=30051be0dd94f7c1c60f0ca43cc48be2}{%
+           family={Petschlies},
+           familyi={P\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=388f5154d6f1330da4a0c7192c2160ad}{%
+           family={Urbach},
+           familyi={U\bibinitperiod},
+           given={C},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Universität Bonn}%
+      }
+      \strng{namehash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{fullhash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{bibnamehash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{authorbibnamehash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{authornamehash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{authorfullhash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \field{sortinit}{P}
+      \field{sortinithash}{8d51b3d5b78d75b54308d706b9bbe285}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{chapter}{8}
+      \field{title}{Computational Physics}
+      \field{year}{2020}
+    \endentry
+    \entry{loopsStaticPotRothe}{book}{}
+      \name{author}{1}{}{%
+        {{hash=e3f5e4b3f0ecff4ee6acabee7668242b}{%
+           family={Rothe},
+           familyi={R\bibinitperiod},
+           given={Heinz\bibnamedelima J},
+           giveni={H\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {World Scientific Publishing Company}%
+      }
+      \strng{namehash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{fullhash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{bibnamehash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{authorbibnamehash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{authornamehash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{authorfullhash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \field{sortinit}{R}
+      \field{sortinithash}{da6b42bd3ab22fee61abed031ee405f7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{chapter}{7}
+      \field{title}{Lattice gauge theories: an introduction}
+      \field{volume}{74}
+      \field{year}{2005}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

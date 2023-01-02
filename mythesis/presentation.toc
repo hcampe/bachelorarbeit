@@ -1,0 +1,7 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {ngerman}{}
+\beamer@sectionintoc {1}{Das Werkzeug: der Metropolisalgorithmus}{2}{0}{1}
+\beamer@sectionintoc {2}{Anwendung auf SU(2)}{10}{0}{2}
+\beamer@sectionintoc {3}{Implementierung}{16}{0}{3}
+\beamer@sectionintoc {4}{Messergebnisse}{19}{0}{4}
+\beamer@sectionintoc {5}{Ausblick}{23}{0}{5}

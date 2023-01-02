@@ -1,0 +1,229 @@
+% !TEX root = mythesis.tex
+
+%==============================================================================
+\chapter{Methodik und Implementation}
+\label{sec:implementation}
+%==============================================================================
+
+\section{SU(2)-Matrizen} \label{sec:su2matrix}
+Nachdem die theoretischen Grundlagen gelegt wurden, kann mit der Implementation
+des Algorithmus begonnen werden. Zunächst wird hierfür eine numerische Darstellung
+von SU(2)-Matrizen benötigt. Die hier verwendete Form ist an die von Urbach und
+Petschlies \cite{urbachCPscript} angelehnt. Aus der Definition von unitären Matrizen
+\[
+    U^\dag U = U U^\dag = \mathds{1}
+\]
+lässt sich ableiten, dass sich jede unitäre $2 \times 2$-Matrix in der Form
+\[
+U =
+\begin{pmatrix}
+    a    & b   \\
+    -b^* & a^* \\
+\end{pmatrix},
+\; a, b \in {C}, \; |a|^2 + |b|^2 = 1.
+\]
+darstellen lässt~\cite{urbachCPscript}.
+
+Die Klasse speichert also lediglich die Einträge der oberen Zeile einer jeden Matrix.
+Man kann zeigen, dass sich Matrixmultiplikation im Rahmen dieser Darstellung wie
+folgt umsetzen lässt~\cite{urbachCPscript}:
+\[
+    (a_1, b_1) \cdot (a_2, b_2) = (a_1 b_2 - b_1 b_2^*, a_1 b_2 + b_1 a_2^*).
+\]
+Die weiteren Matrixoperationen ergeben sich trivial aus der verwendeten Form:
+\begin{align*}
+    (a_1, b_1) + (a_2, b_2) &= (a_1 + a_2, b_1 + b_2), \\
+    (a, b)^\dag &= (a^*, -b), \\
+    \text{tr}~(a, b) &= 2 \, \text{Re} \, a.
+\end{align*}
+Aufgrund der endlichen Präzision der verwendeten Datentypen muss für eine betrachtete
+Matrix $U$ hin und wieder $\text{det} \, U = 1$ forciert werden. Die geschieht durch
+\cite{urbachCPscript}
+\[
+    (a, b) \mapsto \left(\frac{a}{\sqrt{|a|^2 + |b|^2}},
+    \frac{b}{\sqrt{|a|^2 + |b|^2}}\right).
+\]
+
+\section{Zufällige SU(2)-Matrizen} \label{sec:randomSU2}
+Eine Herausforderung bildet die Generierung zufälliger Paralleltransporte $U'_\mu(x)$,
+die, wie in Abschnitt~\ref{sec:metropolis} erwähnt, \enquote{nah} an $U_\mu(x)$ liegen
+sollen. Hierzu nutzen wir, dass SU(2) isomorph zur Sphäre $S^3$ ist vermöge des
+Isomorphismus \cite{urbachCPscript}
+\begin{align*}
+    \phi: S^3 &\rightarrow \mathrm{SU}(2),\\
+    (x^0, \vec{x}) &\mapsto x^0 \mathds{1} + i \vec{x} \cdot \vec{\sigma}.
+\end{align*}
+Hier sind $\{\sigma^i\}_{i \in \{1,2,3\}}$ die Paulimatrizen. Für die Punkte auf $S^3$
+verwenden wir Kugelkoordinaten
+\[
+    \begin{pmatrix}
+    x^0 \\
+    x^1 \\
+    x^2 \\
+    x^3
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+    \cos(\chi) \sin(\vartheta) \cos(\varphi) \\
+    \sin(\chi) \sin(\vartheta) \cos(\varphi) \\
+    \sin(\chi) \sin(\vartheta) \sin(\varphi) \\
+    \sin(\chi) \cos(\vartheta)
+    \end{pmatrix}.
+\]
+Folgende Zufallszahlen werden uniform generiert:
+\begin{align*}
+    \chi &\in (0, 2 \pi \cdot \delta),\\
+    \varphi &\in (0, 2 \pi),\\
+    \cos(\vartheta) &\in (-1,1).
+\end{align*}
+Hier kann $\delta > 0$ beliebig klein gewählt werden, sodass die resultierende
+Matrix
+\begin{align*}
+    R &= (x^0 + i x^3, x^2 + i x^1) \\
+    &= (\cos(\chi) + i \sin(\chi) \cos(\vartheta),
+    \sin(\chi) \sin(\vartheta) \sin(\varphi) + i \sin(\chi) \sin(\vartheta) \cos(\varphi))
+\end{align*}
+nah an $\mathds{1}$ liegt\footnote{Es sei erwähnt, dass selbst bei
+$\delta = 1$ die generierten Punkte nicht isotrop auf $S^3$ verteilt sein werden.
+Hierfür müssten die Koordinaten anders generiert werden. Der Algorithmus ist aber
+so gestaltet, dass $\vec{x}$ isotrop auf $S^2$ verteilt sind (daher die Generierung
+von $\cos(\vartheta) \in (-1,1)$). Da $\delta$ stets klein gewählt wird, genügt
+dies für unsere Zwecke.}. Dann kann
+für ein gegebenes $U_\mu(x)$ der neue Kandidat durch
+\[
+    U'_\mu(x) = R \cdot U_\mu(x)
+\]
+erzeugt werden.
+
+\section{Implementierung des Algorithmus' sowie der Observablen}
+Der beschriebene Algorithmus wurde in C++ implementiert, der Programmcode ist auf
+Github\footnote{\url{https://github.com/s6hevonc/bachelorarbeit}} einsehbar. Hier soll nur eine kurze Auflistung der wichtigsten Klassen
+und Funktionen folgen, die Details lassen sich in den Header Files nachlesen.
+
+Die Klasse \texttt{SU2matrix} ist die Repräsentation unitärer $2 \times 2$-Matrizen,
+wie sie in Abschnitt \ref{sec:su2matrix} beschrieben ist. Es wird jeweils die obere
+Reihe der Matrix mit zwei Einträgen vom Typ \texttt{std::complex<double>} gespeichert.
+Die Klasse enthält eine Methode \texttt{renormalise()}, welche die Forcierung der
+Determinante auf 1 umsetzt sowie eine Methode \texttt{dagger()} für die hermitesche
+Adjunktion. Für die Addition und Multiplikation wurden die entsprechenden Operatoren
+\emph{überladen}, d.\,h. für zwei Instanzen \texttt{A} und \texttt{B} der Klasse kann 
+ihre Summe resp. ihr Produkt durch \texttt{A + B} resp. \texttt{A * B} berechnet
+werden. Schließlich gibt es eine Funktion \texttt{randomSU2}, die eine zufällige
+SU(2)-Matrix wie in Abschnitt \ref{sec:randomSU2} beschrieben generiert; sie nimmt
+$\delta$ für die Stärke der \enquote{Abweichung} von $\mathds{1}$ als Argument entgegen.
+
+Die zweite Klasse heißt \texttt{Gaugeconfig}. Eine Instanz \texttt{U} beschreibt den
+Zustand des Eichfeldes in Form der Paralleltransporter auf einem geg. Gitter, im
+Wesentlichen handelt es sich also um ein fünfdimensionales Array der Maße
+$L_\text{t} \times L_\text{s} \times L_\text{s} \times L_\text{s} \times 4$.
+Die 4 am Ende rührt daher, dass je Gitterpunkt $x$ vier Paralleltransporter
+$U_\mu(x)$ vorliegen, einer in jede Raumzeitrichtung. Wichtigste Methode der Klasse
+ist die Überladung des \texttt{()}-Operators. Konkret kann auf $U_\mu(x)$ mit
+\texttt{U(x, mu)} zugegriffen werden. Hier sind auch direkt die periodischen
+Randbedingungen implementiert: \texttt{x} ist ein \texttt{std::vector<long int>},
+der auch negative Einträge haben kann. Zugehörig zu \texttt{Gaugeconfig} ist noch
+die Funktion \texttt{hotStart}, welche zu gegebenen Gittermaßen $L_\text{t}$ und
+$L_\text{s}$ und dem Parameter $\delta$ eine Konfiguration \texttt{U} zurückgibt,
+welche an jeden Gitterpunkt zufällig generierte SU(2)-Matrizen enthält.
+
+Die für den Metropolisalgorithmus notwendigen Staples (vgl. Abschn.
+\ref{sec:wilsonMetropolis} sind mittles der Funktion \texttt{getStaple} zu berechnen.
+Der fertige Algorithmus ist dann in der Funktion \texttt{sweep} implementiert, welche
+eine einzelne Iterationen auf einer gegebenen \texttt{Gaugeconfig} durchführt.
+Hierbei kann $\delta$ für die Zufallsgenerierung sowie die Anzahl der Iterationen
+je Paralleltransport spezifiziert werden.
+
+Für die Observablen existiert zunächst die Funktion \texttt{getPlaquette}, welche
+die Plaquette ausgehend von einem geg. Gitterpunkt $x$ zurückgibt. Die Funktion
+\texttt{gaugeEnergy} berechnet die gesamte Wirkung des Gitters. Weiterhin gibt
+die Funktion \texttt{getPlanarLoop} den Wert eines planaren Wilson-Loops zurück.
+Schließlich finden sich in \texttt{getSqrt2Loop}, \texttt{getSqrt3Loop} etc.
+einzelne Funktionen, die nichtplanare Wilson-Loops vermessen. So ist es möglich,
+auch nicht ganzzahlige $r$ für den Abstand des Quark-Antiquark-Paares zu betrachten.
+
+
+\section{Parameter und Ablauf der durchgeführten Simulationen}
+Um einen Überblick über den Ablauf der Simulation zu bieten, ist in Listing
+\ref{lst:main} eine exemplarische \texttt{main}-Funktion nachzulesen.
+
+\begin{lstlisting}[language=C++,float,caption=Ein Beispiel für main.cpp,label=lst:main]
+int main()
+{
+    // for random number genration:
+    std::random_device rd {}; // to generate the seed for...
+    std::mt19937 engine { rd() }; // Mersenne twister generator
+
+    // lattice parameters
+    const std::size_t timeSize { 10 };
+    const std::size_t spaceSize { 10 };
+
+    // initial configuration:
+    Gaugeconfig U { hotStart(timeSize, spaceSize, engine, 0.) };
+
+    // sweep parameters:
+    const double beta { 2.3 };
+    const double delta { .1 };
+    const std::size_t numberOfSweeps { 10 };
+    const std::size_t iterationsPerSight { 10 };
+
+    // to save observables:
+    const std::string dataDir { "../data/" };
+    const std::string filename { "wilsonsqrt.txt" };
+    std::vector<double> results;
+
+    std::cout << "warming up..." << std::endl;
+    for (std::size_t i {0}; i < 10; i++)
+    {
+        sweep(U, beta, delta, iterationsPerSight, engine);
+    }
+
+    std::cout << "performing " << numberOfSweeps << " sweeps..." << std::endl;
+
+// define merge behaviour for std::vector:
+#pragma omp declare reduction (merge : std::vector<double> : omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end()))
+// parallelised loop: the results are 2 b merged, the engine has to be
+// shared over all threads to obtain uncorrelated data, use two threads
+#pragma omp parallel for reduction(merge: results), shared(engine), num_threads(2)
+    for (std::size_t i=0; i < numberOfSweeps; i++)
+    {
+        results.push_back(getSqrt2Loop(U, 2));
+
+        for (size_t j = 0; j < 5; j++)
+        {
+            sweep(U, beta, delta, iterationsPerSight, engine);
+        }
+    }
+    std::cout << "zero if writing successful: ";
+    std::cout << write_2d(results, dataDir + filename, ',') << '\n';
+    return 0;
+}
+\end{lstlisting}
+
+Als Erstes werden alle wichtigen Variablen deklariert und initialisiert. Bei
+\texttt{std::mt19937} handelt es sich um die C++-Standardimplementation eines
+Mersenne-Twister-Generators für Pseudozufallszahlen. Die Messungen werden auf
+einem Gitter der Maße $(L_\text{t}, L_\text{s}) = (10,10)$ durchgeführt, welches
+zunächst kalt, also mit
+$\delta = 0 \rightarrow U_\mu(x) = \mathds{1} \forall x \forall \mu$
+initialisiert wird. Als Nächtes werden die
+Parameter für die einzelnen Sweeps ($\beta = 2.3, \delta = 0.1$) sowie die
+Zahl der Hits je Paralleltransport sowie die Gesamtzahl der Iterationen
+festgelegt. Außerdem wird die Speicherung der Messwerte vorbereitet.
+
+Nachdem das Gitter zunächst thermalisiert wird, kann die Messphase beginnen.
+Der eigentliche Messvorgang wird, um das Verfahren zu
+beschleunigen, mit \texttt{fopenmp} auf mehreren Kernen durchgeführt. Konkret wird
+die Schleife mit den Messungen mit dem Befehl in Zeile 37 parallelisiert.
+\texttt{reduction(merge: results)} bedeutet, dass die Ergebnisse aus allen Threads
+am Ende im Array \texttt{results} zusammen gespeichert werden sollen. Außerdem
+ist es wichtig, dass alle Threads
+auf die \texttt{engine}, die Instanz des Zufallsgenerators, \emph{gleichzeitig}
+zugreifen können: Standardmäßig würde jeder Thread seine eigene Instanz erhalten,
+dann wären aber alle in den einzelnen Threads generierten Pseudozufallszahlen gleich
+und die resultierenden Daten korreliert. \texttt{num\_threads} spezifiziert die
+Anzahl der Threads. Zwischen jeder Messungen werden je fünf Sweeps
+durchgeführt, um Korrelation zwischen den Daten zu verringern.
+
+Nach Ablauf der Messphase werden die Daten schließlich noch gespeichert, um sie
+danach auswerten zu können. Für alle im folgenden Kapitel diskutierten Daten sind
+die Messwerte im Anhang \ref{sec:params} zu finden.

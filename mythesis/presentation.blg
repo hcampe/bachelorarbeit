@@ -1,0 +1,15 @@
+[0] Config.pm:302> INFO - This is Biber 2.9
+[0] Config.pm:305> INFO - Logfile is 'presentation.blg'
+[34] biber:313> INFO - === Sa Jun 25, 2022, 11:00:54
+[54] Biber.pm:371> INFO - Reading 'presentation.bcf'
+[115] Biber.pm:857> INFO - Found 4 citekeys in bib section 0
+[128] Biber.pm:3981> INFO - Processing section 0
+[139] Biber.pm:4154> INFO - Looking for bibtex format file 'bib/thesis_refs.bib' for section 0
+[140] bibtex.pm:1468> INFO - LaTeX decoding ...
+[150] bibtex.pm:1294> INFO - Found BibTeX data source 'bib/thesis_refs.bib'
+[185] UCollate.pm:68> INFO - Overriding locale 'de-DE' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[186] UCollate.pm:68> INFO - Overriding locale 'de-DE' defaults 'variable = shifted' with 'variable = non-ignorable'
+[186] Biber.pm:3809> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'de-DE'
+[186] Biber.pm:3815> INFO - No sort tailoring available for locale 'de-DE'
+[195] bbl.pm:617> INFO - Writing 'presentation.bbl' with encoding 'UTF-8'
+[198] bbl.pm:720> INFO - Output to presentation.bbl

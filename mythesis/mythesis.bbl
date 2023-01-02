@@ -1,0 +1,229 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{historyOfQCD}{article}{}
+      \name{author}{1}{}{%
+        {{hash=a8f0abefc4a361e77d482d820a069ef1}{%
+           family={Fritzsch},
+           familyi={F\bibinitperiod},
+           given={Harald},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{a8f0abefc4a361e77d482d820a069ef1}
+      \strng{fullhash}{a8f0abefc4a361e77d482d820a069ef1}
+      \strng{bibnamehash}{a8f0abefc4a361e77d482d820a069ef1}
+      \strng{authorbibnamehash}{a8f0abefc4a361e77d482d820a069ef1}
+      \strng{authornamehash}{a8f0abefc4a361e77d482d820a069ef1}
+      \strng{authorfullhash}{a8f0abefc4a361e77d482d820a069ef1}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://cerncourier.com/a/the-history-of-qcd/}}
+      \field{journaltitle}{CERN Courier, Sept}
+      \field{title}{The history of QCD}
+      \field{volume}{27}
+      \field{year}{2012}
+    \endentry
+    \entry{latticeQCDhistory}{article}{}
+      \name{author}{2}{}{%
+        {{hash=f6c8d4a3d1cf0111e141f1dcea2aac66}{%
+           family={DeTar},
+           familyi={D\bibinitperiod},
+           given={Carleton},
+           giveni={C\bibinitperiod}}}%
+        {{hash=b4c47a6c6df2a153c08dc7af3b4d6764}{%
+           family={Gottlieb},
+           familyi={G\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{9d9f7bccae23bb12a8d92b279f343ff3}
+      \strng{fullhash}{9d9f7bccae23bb12a8d92b279f343ff3}
+      \strng{bibnamehash}{9d9f7bccae23bb12a8d92b279f343ff3}
+      \strng{authorbibnamehash}{9d9f7bccae23bb12a8d92b279f343ff3}
+      \strng{authornamehash}{9d9f7bccae23bb12a8d92b279f343ff3}
+      \strng{authorfullhash}{9d9f7bccae23bb12a8d92b279f343ff3}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Physics Today}
+      \field{number}{2}
+      \field{title}{Lattice quantum chromodynamics comes of age}
+      \field{volume}{57}
+      \field{year}{2004}
+      \field{pages}{45\bibrangedash 51}
+      \range{pages}{7}
+    \endentry
+    \entry{freedmanCreutz}{article}{}
+      \name{author}{2}{}{%
+        {{hash=552368d47201be8e859cf5d89a641d01}{%
+           family={Creutz},
+           familyi={C\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=c02c22a3304dd754faf1a295c795a560}{%
+           family={Freedman},
+           familyi={F\bibinitperiod},
+           given={B},
+           giveni={B\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{fullhash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{bibnamehash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{authorbibnamehash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{authornamehash}{db7215a7df826ac26c3cce2b3795d06f}
+      \strng{authorfullhash}{db7215a7df826ac26c3cce2b3795d06f}
+      \field{sortinit}{5}
+      \field{sortinithash}{3c19c3776b658b3558e9e2e4840c01e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Annals of Physics}
+      \field{number}{2}
+      \field{title}{A statistical approach to quantum mechanics}
+      \field{volume}{132}
+      \field{year}{1981}
+      \field{pages}{427\bibrangedash 462}
+      \range{pages}{36}
+    \endentry
+    \entry{gattringerLang}{book}{}
+      \name{author}{2}{}{%
+        {{hash=ab3acce952ef8402d2dbc5455a71d4be}{%
+           family={Gattringer},
+           familyi={G\bibinitperiod},
+           given={Christof},
+           giveni={C\bibinitperiod}}}%
+        {{hash=797b250c63dc835bc1409939d00b872c}{%
+           family={Lang},
+           familyi={L\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Science \& Business Media}%
+      }
+      \strng{namehash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{fullhash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{bibnamehash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{authorbibnamehash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{authornamehash}{6ed23f72aca906124fc1f6dfdc112035}
+      \strng{authorfullhash}{6ed23f72aca906124fc1f6dfdc112035}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{chapter}{2, 3}
+      \field{series}{Lecture Notes in Physics}
+      \field{title}{Quantum chromodynamics on the lattice: an introductory presentation}
+      \field{volume}{788}
+      \field{year}{2009}
+    \endentry
+    \entry{urbachCPscript}{misc}{}
+      \name{author}{2}{}{%
+        {{hash=30051be0dd94f7c1c60f0ca43cc48be2}{%
+           family={Petschlies},
+           familyi={P\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=388f5154d6f1330da4a0c7192c2160ad}{%
+           family={Urbach},
+           familyi={U\bibinitperiod},
+           given={C},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Universität Bonn}%
+      }
+      \strng{namehash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{fullhash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{bibnamehash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{authorbibnamehash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{authornamehash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \strng{authorfullhash}{9a30d414d132cd3e1dc068dda6301bd3}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{chapter}{8}
+      \field{title}{Computational Physics}
+      \field{year}{2020}
+    \endentry
+    \entry{latticeQCDforNovices}{article}{}
+      \name{author}{1}{}{%
+        {{hash=52db421c4258054059f86a0d378349f6}{%
+           family={Lepage},
+           familyi={L\bibinitperiod},
+           given={G\bibnamedelima Peter},
+           giveni={G\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {World Scientific}%
+      }
+      \strng{namehash}{52db421c4258054059f86a0d378349f6}
+      \strng{fullhash}{52db421c4258054059f86a0d378349f6}
+      \strng{bibnamehash}{52db421c4258054059f86a0d378349f6}
+      \strng{authorbibnamehash}{52db421c4258054059f86a0d378349f6}
+      \strng{authornamehash}{52db421c4258054059f86a0d378349f6}
+      \strng{authorfullhash}{52db421c4258054059f86a0d378349f6}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Strong Interactions at Low and Intermediate Energies}
+      \field{title}{Lattice QCD for novices}
+      \field{year}{1998}
+      \field{pages}{49\bibrangedash 90}
+      \range{pages}{42}
+    \endentry
+    \entry{loopsStaticPotRothe}{book}{}
+      \name{author}{1}{}{%
+        {{hash=e3f5e4b3f0ecff4ee6acabee7668242b}{%
+           family={Rothe},
+           familyi={R\bibinitperiod},
+           given={Heinz\bibnamedelima J},
+           giveni={H\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {World Scientific Publishing Company}%
+      }
+      \strng{namehash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{fullhash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{bibnamehash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{authorbibnamehash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{authornamehash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \strng{authorfullhash}{e3f5e4b3f0ecff4ee6acabee7668242b}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{chapter}{7}
+      \field{title}{Lattice gauge theories: an introduction}
+      \field{volume}{74}
+      \field{year}{2005}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -1,0 +1,52 @@
+% !TEX root = mythesis.tex
+
+%==============================================================================
+\chapter{Einleitung}
+\label{sec:einleitung}
+%==============================================================================
+
+Die theoretische Teilchenphysik erfuhr eine Reihe von Durchbrüchen, nachdem
+Gell-Mann und Zweig 1964 das Konzept von Quarks eingeführt hatten. So benannten
+sie die \enquote{Bausteine} des in den vorherigen Jahren immer größer gewordenen
+Teilchenzoos und erklärten insbes. die von Gell-Mann und Ne'eman zuerst beschriebenen
+SU(3)-Multiplets von Baryonen~\cite{historyOfQCD}. 1971 führten Gell-Mann und Fritzsch
+die Farbladung der Quarks als weitere Quantenzahl ein, um Zustände aus drei
+gleichen Quarks mit dem Pauli-Prinzip in Einklang zu bringen. Im darauffolgenden
+Jahr betrachteten sie dann die Farb-Gruppe SU(3) als Eichgruppe und legten so
+die Grundsteine einer neue Theorie, der Quantenchromodynamik~\cite{historyOfQCD}.
+Eine wichtige Eigenschaft dieser neuen Theorie ist das sog. \emph{Confinement}:
+Quarks können nie ungebunden auftreten. Rein physikalisch lässt
+sich diese Eigenschaft darauf zurückführen, dass Gluonen (die Mediatoren der 
+beschriebenen, sog. starken Wechselwirkung) selbst Farbladungen tragen, also anders
+als z.\,B. Photonen auch untereinander interagieren können~\cite{latticeQCDhistory}.
+
+Leider hat die Quantenchromodynamik einen beträchtlichen Nachteil gegenüber
+der Quantenelektrodynamik: Bei niedrigen Energien lässt sie sich nicht perturbativ
+betrachten. Hierdurch sind analytische Betrachtungen in diesem Bereich sehr schwierig,
+weswegen andere Methoden vonnöten sind. Eine solche Alternative bietet eine
+gitterfeldtheoretische Formulierung, welche erstmals 1974 von Wilson vorgelegt
+wurde~\cite{latticeQCDhistory}. Dabei präsentierte er gleichzeitig eine erste
+Motivation für Confinement, welche fünf Jahre später numerisch bestätigt werden konnte.
+
+In dieser Arbeit soll diese numerische Betrachtung nachvollzogen
+werden: Der Einfachheit halber wird hier nur die SU(2)-Eichsymmetrie betrachtet:
+Die Simulation des dazugehörigen Eichfelds bietet die Möglichkeit, den Wert des
+statischen Potentials eines Quark\footnote{Am treffendsten wäre wohl die Bezeichnung
+als \enquote{Pseudoquark}, da es sich nicht um die SU(3)-Eichsymmetrie
+handelt.}-Antiquark-Paars für
+verschiedene Abstände zu berechnen. Confinement sollte dann dadurch zu erkennen
+sein, dass das Potential (neben einem Coulomb-artigen Verhalten für kleine Abstände)
+für große Abstände \emph{linear} ansteigt. Entsprechend bleibt die Kraft zwischen
+Quark und Antiquark konstant, wodurch man das Paar nicht voneinander isolieren kann.
+
+Folgender Aufbau wurde für die folgenden Abschnitte gewählt: In Kapitel
+\ref{sec:theorie} wird mit dem Metropolisalgorithmus erst die allgemeine
+numerische Methode
+vorgestellt, welche die numerische Approximation von Feynmans Pfadintegralen
+ermöglicht. Darauf folgt dann die theoretische Anwendung auf die SU(2)-Eichsymmetrie
+-- von einer allgemeinen Formulierung der Wirkung zur konkreten Observable für die 
+Bestimmung des statischen Potentials. Kapitel \ref{sec:implementation}
+enthält dann die Details der konkreten Implementation und den Ablauf der 
+Simulation und in Kapitel \ref{sec:auswertung} werden die gewonnenen
+Daten ausgewertet und die Ergebnisse präsentiert.
+
